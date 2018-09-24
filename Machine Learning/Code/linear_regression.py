@@ -5,7 +5,7 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import numpy as np
 import random
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import LinearRegression
@@ -14,31 +14,15 @@ import sys
 
 fig = plt.figure()
 
-# Read command line arguments
+# Read command line arguments ('method', number of x and y values, degree of polynom, alpha parameter)
 
 method = sys.argv[1]
 n = int(sys.argv[2])
-alpha = float(sys.argv[3])
+d = int(sys.argv[3])
+alpha = float(sys.argv[4])
 
-if method == 'OLS':
-
-	print ('OK, OLS!')
-
-elif method == 'Ridge':
-	
-	print ('OK, Ridge!')
-
-elif method == 'Lasso':
-
-	print ('OK, Lasso!')
-
-else:
-	method = 'OLS'
-	print ('Shit!')
-
-# Make data.
-
-step = 1/n
+# Produce data
+step = 1.0/n
 x = np.arange(0, 1, step)                                             # array (20,)
 y = np.arange(0, 1, step)                                             # array (20,)
 
@@ -58,16 +42,33 @@ x_n = np.reshape(x, np.size(x))                                      # array (20
 y_n = np.reshape(y, np.size(y))
 z_n = np.reshape(z, np.size(z))
 
-#Polynomial fit
-poly = PolynomialFeatures(degree=5)
+# Polynomial fit
+poly = PolynomialFeatures(degree=d)
 N = np.size(x)
 X = np.c_[np.ones((N,1)),x_n,y_n]
-
-
 X_fit = poly.fit_transform(X)
-OLS = LinearRegression()
-OLS.fit(X_fit,z_n)
-z_predict = OLS.predict(X_fit)
+
+# Ordinary Least Square method
+if method == 'OLS':
+	OLS = LinearRegression()
+	OLS.fit(X_fit,z_n)
+	z_predict = OLS.predict(X_fit)
+
+# Ridge regression
+elif method == 'Ridge':
+	ridge = Ridge(alpha)
+	ridge.fit(X_fit, z_n)
+	z_predict = ridge.predict(X_fit)
+
+#Lasso regression
+elif method == 'Lasso':
+
+	lasso = Lasso(alpha)
+	lasso.fit(X_fit, z_n)
+	z_predict = lasso.predict(X_fit)
+
+else:
+	print('You have forgotten to select method; OLS, Ridge or Lasso.')
 
 z_new = np.reshape(z_predict, (n, n))
 
@@ -79,7 +80,7 @@ linewidth=0, antialiased=False)
 # Customize the z axis.
 ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f’'))
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
 # Add a color bar which maps values to colors.
 fig.colorbar(surf, shrink=0.5, aspect=5)
@@ -90,7 +91,7 @@ linewidth=0, antialiased=False)
 
 ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f’'))
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
 
 plt.show()
