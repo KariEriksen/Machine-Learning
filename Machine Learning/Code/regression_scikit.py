@@ -22,15 +22,11 @@ d = int(sys.argv[3])
 alpha = float(sys.argv[4])
 
 # Produce data
-x = np.random.rand(n)                                             
-y = np.random.rand(n) 
+step = 1.0/n
+x = np.arange(0, 1, step)                                             # array (20,)
+y = np.arange(0, 1, step)                                             # array (20,)
 
-X = np.c_[np.ones((n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3, \
-		      x**4, x**3*y, x**2*y**2, x*y**3, y**4, \
-		      x**5, x**4*y, x**3*y**2, x**2*y**3, x*y**4, y**5]                                          
-                                               
+x, y = np.meshgrid(x,y)                                               # array (20, 20), (20, 20)
 def FrankeFunction(x,y):
 	term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
 	term2 = 0.75*np.exp(-((9*x+1)**2)/49.0 - 0.1*(9*y+1))
@@ -40,10 +36,44 @@ def FrankeFunction(x,y):
 
 #noise = np.asarray(random.sample((range(n)),n))
 noise = np.random.random_sample((n,))
-z = FrankeFunction(x, y)                       
-                    
-beta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(z)
-z_predict = X.dot(beta)
+z = FrankeFunction(x, y)                                             # array (20, 20)
+
+x_n = np.reshape(x, np.size(x))                                      # array (20*20, )
+y_n = np.reshape(y, np.size(y))
+z_n = np.reshape(z, np.size(z))
+
+# Polynomial fit
+poly = PolynomialFeatures(degree=d)
+N = np.size(x)
+X = np.c_[np.ones((N,1)),x_n,y_n]
+X_fit = poly.fit_transform(X)
+
+print (np.shape(X_fit))
+print (np.shape(X_fit_1))
+
+# Ordinary Least Square method
+if method == 'OLS':
+	OLS = LinearRegression()
+	OLS.fit(X_fit,z_n)
+	z_predict = OLS.predict(X_fit)
+
+# Ridge regression
+elif method == 'Ridge':
+	ridge = Ridge(alpha)
+	ridge.fit(X_fit, z_n)
+	z_predict = ridge.predict(X_fit)
+
+#Lasso regression
+elif method == 'Lasso':
+
+	lasso = Lasso(alpha)
+	lasso.fit(X_fit, z_n)
+	z_predict = lasso.predict(X_fit)
+
+else:
+	print('You have forgotten to select method; OLS, Ridge or Lasso.')
+
+z_new = np.reshape(z_predict, (n, n))
 
 
 # Plot the surface 
@@ -60,12 +90,13 @@ ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 fig.colorbar(surf, shrink=0.5, aspect=5)
 
 ax = fig.add_subplot(2, 1, 2, projection='3d')
-ax.plot_surface(x, y, z_predict, cmap=cm.coolwarm,
+ax.plot_surface(x, y, z_new, cmap=cm.coolwarm,
 linewidth=0, antialiased=False)
 
 ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+
 
 plt.show()
 
