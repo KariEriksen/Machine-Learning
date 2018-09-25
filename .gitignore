@@ -1,0 +1,108 @@
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Prerequisites
+######################
+*.d
+
+# Compiled Object files
+######################
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+######################
+*.gch
+*.pch
+
+#report file
+######################
+*.out*
+
+# Fortran module files
+######################
+*.mod
+*.smod
+
+# Compiled Static libraries
+######################
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+######################
+*.exe
+*.out
+*.app
+*.x
+
+#swapfiles from vim 
+######################
+*.swp
+
+#python 
+######################
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+#qt files
+######################
+*.config
+*.creator
+*.files
+*.include
+
+#latex files
+######################
+*.aux
+*.log 
+*.bbl 
+*.blg 
+
+#data files
+######################
+/data
+*.csv
+
+# Compiled Dynamic libraries
+######################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.dylib
+
