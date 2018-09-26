@@ -16,6 +16,7 @@ fig = plt.figure()
 
 # Read command line arguments ('method', number of x and y values, degree of polynom, alpha parameter)
 
+# Take in command line arguments
 method = sys.argv[1]
 n = int(sys.argv[2])
 d = int(sys.argv[3])
@@ -32,6 +33,7 @@ x, y = np.meshgrid(x,y)
 x = np.reshape(x, np.size(x))
 y = np.reshape(y, np.size(y)) 
 
+# Fit the design matrix
 X = np.c_[np.ones((n*n,1)), x, y, \
 		      x**2, x*y, y**2, \
 		      x**3, x**2*y, x*y**2, y**3, \
@@ -48,7 +50,8 @@ def FrankeFunction(x,y):
 #noise = np.asarray(random.sample((range(n)),n))
 noise = np.random.random_sample((n,))
 z = FrankeFunction(x, y)                       
-                    
+       
+# Calculate the Ordinary Least Square             
 beta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(z)
 z_predict = X.dot(beta)
 
@@ -57,6 +60,11 @@ y_new = np.reshape(y, (n, n))
 z_new = np.reshape(z, (n, n))
 
 z_p_new = np.reshape(z_predict, (n, n))
+
+# Calculate the Mean Square Error
+diff = z - z_predict
+MSE = 1/(n*n)*(sum(diff*diff))
+print (MSE)
 
 # Plot the surface 
 ax = fig.add_subplot(2, 1, 1, projection='3d')
@@ -79,6 +87,6 @@ ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
-plt.show()
+#plt.show()
 
 

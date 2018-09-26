@@ -9,8 +9,8 @@ from sklearn.linear_model import Ridge, Lasso
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 import sys
-
 
 fig = plt.figure()
 
@@ -48,9 +48,6 @@ N = np.size(x)
 X = np.c_[np.ones((N,1)),x_n,y_n]
 X_fit = poly.fit_transform(X)
 
-print (np.shape(X_fit))
-print (np.shape(X_fit_1))
-
 # Ordinary Least Square method
 if method == 'OLS':
 	OLS = LinearRegression()
@@ -75,6 +72,13 @@ else:
 
 z_new = np.reshape(z_predict, (n, n))
 
+MSE_scikit = mean_squared_error(z_n, z_predict)
+diff = z_n - z_predict
+MSE = 1/(n*n)*(sum(diff*diff))
+
+print ('MSE_scikit = %s' % MSE_scikit)
+print ('MSE = %s' % MSE)
+
 
 # Plot the surface 
 ax = fig.add_subplot(2, 1, 1, projection='3d')
@@ -98,7 +102,7 @@ ax.zaxis.set_major_locator(LinearLocator(10))
 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
 
-plt.show()
+#plt.show()
 
 
 
