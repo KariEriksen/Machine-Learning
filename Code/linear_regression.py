@@ -2,7 +2,7 @@ import numpy as np
 
 class My_Linear_Regression:
 	def __init__(self, X, alpha):
-		self.method = method
+		self.X = X
 		self.alpha = alpha	
 
 	def My_OLS(self, X, alpha):
