@@ -26,11 +26,8 @@ class My_Linear_Regression:
 		OLS = LinearRegression()
 		OLS.fit(X_fit,z_n)
 		z_predict = OLS.predict(X_fit)
-
-		diff = z_n - z_predict
-		MSE = 1/(n*n)*(sum(diff*diff))
 		
-		return MSE
+		return z_predict
 
 	def My_Ridge(self, X, alpha):
 
@@ -38,10 +35,7 @@ class My_Linear_Regression:
 		ridge.fit(X_fit, z_n)
 		z_predict = ridge.predict(X_fit)
 
-		diff = z_n - z_predict
-		MSE = 1/(n*n)*(sum(diff*diff))
-		
-		return MSE
+		return z_predict
 
 	def My_Lasso(self, X, alpha):
 
@@ -49,10 +43,7 @@ class My_Linear_Regression:
 		ridge.fit(X_fit, z_n)
 		z_predict = ridge.predict(X_fit)
 
-		diff = z_n - z_predict
-		MSE = 1/(n*n)*(sum(diff*diff))
-		
-		return MSE
+		return z_predict
 
              
 
