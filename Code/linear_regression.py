@@ -1,3 +1,4 @@
+from sklearn.linear_model import Ridge, Lasso
 import numpy as np
 
 class My_Linear_Regression:
@@ -5,7 +6,7 @@ class My_Linear_Regression:
 		self.X = X
 		self.alpha = alpha	
 
-	def My_OLS(self, X, alpha):
+	def My_OLS(self):
 
 		"""
 		Ordinary Least Square method
@@ -21,27 +22,28 @@ class My_Linear_Regression:
 		up to fifth order
 	
 		"""
-	
-		# Ordinary Least Square method
-		OLS = LinearRegression()
-		OLS.fit(X_fit,z_n)
-		z_predict = OLS.predict(X_fit)
+
+		# Calculate the Ordinary Least Square             
+		beta = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(z)
+		z_predict = X.dot(beta)
 		
 		return z_predict
 
-	def My_Ridge(self, X, alpha):
+	def My_Ridge(self):
 
+		# Calculate the Ridge regression
 		ridge = Ridge(alpha)
 		ridge.fit(X_fit, z_n)
-		z_predict = ridge.predict(X_fit)
+		z_predict = ridge.predict(X)
 
 		return z_predict
 
-	def My_Lasso(self, X, alpha):
+	def My_Lasso(self):
 
-		ridge = Ridge(alpha)
-		ridge.fit(X_fit, z_n)
-		z_predict = ridge.predict(X_fit)
+		# Calculate the Lasso regression using scikit learn
+		lasso = Lasso(alpha)
+		lasso.fit(X_fit, z_n)
+		z_predict = lasso.predict(X)
 
 		return z_predict
 
