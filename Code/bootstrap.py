@@ -32,8 +32,8 @@ class Bootstrap:
 	Generates sampling distribution of mean
 	"""
 	# Split the data according to the given decimal percentage
-	n = np.size(X,1)   # size of column
-	C = (n**2)*split
+	n = np.size(X,0)   # size of column (number of rows)
+	C = n*split
 	X_test = np.random.choice(x, C))
 	
 	np.random.shuffle(X)
