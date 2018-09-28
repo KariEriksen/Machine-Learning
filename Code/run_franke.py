@@ -12,21 +12,37 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 import sys
 
-from My_Linear_Regression import My_OLS, My_Ridge, My_Lasso
+from linear_regression import My_Linear_Regression 
+#from My_Linear_Regression import My_OLS, My_Ridge, My_Lasso
+from bootstrap import Bootstrap 
 
 # Read command line arguments ('method', number of x and y values, alpha parameter)
 
 # Take in command line arguments
 method = sys.argv[1]
 n = int(sys.argv[2])
-alpha = float(sys.argv[4])
+alpha = float(sys.argv[3])
+
+# Set some values
+B = 100
+split = 0.7
 
 # Produce data
 step = 1.0/n
 x = np.arange(0, 1, step)             
 y = np.arange(0, 1, step)                                             
 
-x, y = np.meshgrid(x,y)                                               
+x, y = np.meshgrid(x,y)   
+
+x = np.reshape(x, np.size(x))
+y = np.reshape(y, np.size(y)) 
+
+# Fit the design matrix
+X_fit = np.c_[np.ones((n*n,1)), x, y, \
+		      x**2, x*y, y**2, \
+		      x**3, x**2*y, x*y**2, y**3, \
+		      x**4, x**3*y, x**2*y**2, x*y**3, y**4, \
+		      x**5, x**4*y, x**3*y**2, x**2*y**3, x*y**4, y**5]                                                     
 
 def FrankeFunction(x,y):
 	term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
@@ -40,8 +56,12 @@ noise = np.random.random_sample((n,))
 z = FrankeFunction(x, y) 
 
 # Do linear regression
-lr = My_Linear_Regression()
-MSE = lr.My_('method') #something something
+#lr = My_Linear_Regression(X_fit, alpha)
+#z_predict = lr.My_OLS
+
+# Do bootstrap 
+boot = Bootstrap(X_fit, B, alpha, split, method)
+MSE = My_Bootstrap()
 
 
 
