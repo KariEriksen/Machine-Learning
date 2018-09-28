@@ -2,9 +2,10 @@ from sklearn.linear_model import Ridge, Lasso
 import numpy as np
 
 class My_Linear_Regression:
-	def __init__(self, X_training, X_test, alpha):
+	def __init__(self, X_training, X_test, z, alpha):
 		self.X_training = X_training
 		self.X_test = X_test
+		self.z = z
 		self.alpha = alpha	
 
 		"""
@@ -33,18 +34,22 @@ class My_Linear_Regression:
 		"""
 
 		# Calculate the Ordinary Least Square             
-		beta = np.linalg.inv(X_training.T.dot(X_training)).dot(X_training.T).dot(z)
-		z_predict = X_test.dot(beta)
+		beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		z_predict = self.X_test.dot(beta)
 		
 		return z_predict
 
 	def My_Ridge(self):
 
-		# Calculate the Ridge regression
-		ridge = Ridge(alpha)
-		ridge.fit(X_training, z_n)
-		z_predict = ridge.predict(X_test)
+		"""
+		Ridge regression method
+		OBS!!!!! Add lambda
+		"""
 
+		# Calculate the Ridge regression
+		beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		z_predict = self.X_test.dot(beta)
+		
 		return z_predict
 
 	def My_Lasso(self):
