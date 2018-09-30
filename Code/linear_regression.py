@@ -14,7 +14,7 @@ class My_Linear_Regression:
 		data.
 		"""
 		if X_test == None:
-			self.X_test = X_training	
+			self.X_test = self.X_training	
 
 	def My_OLS(self):
 
@@ -34,10 +34,9 @@ class My_Linear_Regression:
 		"""
 
 		# Calculate the Ordinary Least Square             
-		beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
-		z_predict = self.X_test.dot(beta)
+		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
 		
-		return z_predict
+		#return z_predict
 
 	def My_Ridge(self):
 
@@ -47,19 +46,29 @@ class My_Linear_Regression:
 		"""
 
 		# Calculate the Ridge regression
-		beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
-		z_predict = self.X_test.dot(beta)
+		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		#z_predict = self.X_test.dot(beta)
 		
-		return z_predict
+		#return z_predict
 
 	def My_Lasso(self):
 
 		# Calculate the Lasso regression using scikit learn
-		lasso = Lasso(alpha)
-		lasso.fit(X_training, z_n)
-		z_predict = lasso.predict(X_test)
+		#lasso = Lasso(alpha)
+		#beta = lasso.fit(X_training, z_n)
+		#z_predict = lasso.predict(X_test)
+		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		#return z_predict
 
+	def My_Predict(self, X_test):
+		if X_test == None:
+			self.X_test = self.X_training	
+		
+		z_predict = self.X_test.dot(self.beta)
+		
 		return z_predict
+
+		
 
              
 
