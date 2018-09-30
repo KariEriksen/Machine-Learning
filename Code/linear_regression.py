@@ -13,8 +13,8 @@ class My_Linear_Regression:
 		and test data. If not, then the two variables are 		the same and we do at fit and predict on the same
 		data.
 		"""
-		if X_test == None:
-			self.X_test = self.X_training	
+		#if X_test == None:
+		#	self.X_test = self.X_training	
 
 	def My_OLS(self):
 
