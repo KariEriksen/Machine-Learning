@@ -39,24 +39,53 @@ At last we will be using real data from a website that provides terrain data ove
 
 \section*{Theory}
 
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Figures/franke.png}
+\caption{Surface plot of Franke function for $x, y \in [0,1]$ generated with python code given in the assigment paper.}
+\label{fig:franke}
+\end{figure}
+
+
+The Franke function is a two-dimensional function consisting of a sum of four exponatials, eq. \ref{eq:frank}. This will be the function which we will generate data from to feed our regression models. We define it for $x, y \in [0,1]$. \\
+It can be seen represented as a surface plot in figure \ref{fig:franke}.
+
 \begin{align}
 f(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4} - \frac{(9y-2)^2}{4}\right)}+\frac{3}{4}\exp{\left(-\frac{(9x+1)^2}{49}- \frac{(9y+1)}{10}\right)} \nonumber \\
 &+\frac{1}{2}\exp{\left(-\frac{(9x-7)^2}{4} - \frac{(9y-3)^2}{4}\right)} -\frac{1}{5}\exp{\left(-(9x-4)^2 - (9y-7)^2\right) } \label{eq:frank}
 \end{align}
 
 
+
+
 \section*{Regression methods}
 
 \subsection*{Linear Regression}
+
+Linear regression is a method in statistics that predicts the response of one or several explanatory variables. At its simplest form we could try to find the stright line between two points. This equation is fairly simple.
+
+\begin{equation}
+\hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \epsilon
+\end{equation}
+
+Here $\hat{y}$ is a dependent variable, the outcome, $x$ is an independent variable, or the predictor, and $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ the intercept and slope respectively. $\epsilon$ is the error in our prediction. \\
+If we had several predictors we could extend our problem to a more general case.
+
+\begin{equation}
+\hat{y} = f(X) = \beta_{0} + \sum_{j=1}^{p} X_{j} \beta_{j}
+\end{equation}
+
+Now $X$ is a vector containing all predictors, $X^{\top} = \{X_0, X_1, X_2, X_3,..., X_p\}$, $\beta_0$ is the intercept and $\beta_j$ is a vector keeping all coefficients for each predictor, the parameters we are searching for. Moving $\beta_0$ to the $\beta-\textnormal{vector}$ and adding an extra column with 1's to the design matrix $X^{\top}$ we can reduce the problem to vector form and get the following.
+
 
 \begin{equation}
 \hat{y} = \hat{X} \hat{\beta} + \epsilon
 \end{equation}
 
+\begin{equation}
+y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^{2} + \beta_3 x_i^{3} + \beta_4 x_i^{4} + ... + \beta_d x_i^{d}
+\end{equation}
 
-Linear regression something
-
-We are studying several methods within the field of linear regression.
 
 \subsection*{Ordinary Least Square}
 
