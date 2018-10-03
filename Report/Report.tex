@@ -62,14 +62,23 @@ f(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4} - \frac{(9y-2)^2}{4}\right)}
 
 \subsection*{Linear Regression}
 
-Linear regression is a method in statistics that predicts the response of one or several explanatory variables. At its simplest form we could try to find the stright line between two points. This equation is fairly simple.
+Linear regression is a method in statistics that predicts the response of one or several explanatory variables. It assumes a linear relationship between the dependent and independent variables. At its simplest form we could try to find the stright line between two points. This equation is fairly simple.
 
 \begin{equation}
 \hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \hat{\epsilon}
 \end{equation}
 
-Here $\hat{y}$ is a dependent variable, the outcome, $x$ is an independent variable, or the predictor, and $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ the intercept and slope respectively. $\epsilon$ is the error in our prediction. The solution for $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ in this problem is best found with least square and is also fairly easy.\\
-If we had several predictors we could extend our problem to a more general case.
+Here $\hat{y}$ is a dependent variable, the outcome, $x$ is an independent variable, or the predictor, and $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ the intercept and slope respectively. $\epsilon$ is the error in our prediction. The solution for $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ in this problem is best found with least square and is also fairly easy. Calculating the mean over both variables $(\bar{x}$ and $\bar{y})$ we can find the parameters that give the prediction that differs the least from the exact solution.
+
+\begin{equation}
+\beta_1 = \frac{\sum^n (x_i - \bar{x})(y_i - \bar{y})}{\sum^n (x_i - \bar{x})^2}
+\end{equation}
+
+\begin{equation}
+\beta_0 = \bar{y} - \beta_1 \bar{x}
+\end{equation}
+
+If we have several predictors we can extend our problem to a more general case.
 
 \begin{equation}
 \hat{y} = f(X) = \beta_{0} + \sum_{j=1}^{p} X_{j} \beta_{j}
@@ -111,11 +120,11 @@ In addition our function depends on both $x$ and $y$, so we have two variable th
 \end{bmatrix}
 \end{equation}
 
-This is the matrix we use to solve our problem at hand, and denpending on the matrix having full column rank and the propertie $\mathbf{X}\mathbf{X^{\top}}$ being postive definit we will look at separate methods for finding solutions.
+This is the matrix we use to solve our problem at hand, and denpending on the matrix having full column rank and the propertie $\mathbf{X^{\top}}\mathbf{X}$ being postive definit we will look at separate methods for finding solutions.
 
 \subsection*{Ordinary Least Square}
 
-The least square methods 
+The least square method selects the parameters $\beta$ so that residual sum of squares (RSS) is minimized.
 
 \begin{equation}
 \textnormal{RSS}(\beta) = \sum_{i=1}^{N} (y_i - x_i^{\top}\beta)^2
