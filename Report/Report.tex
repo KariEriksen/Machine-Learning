@@ -65,29 +65,57 @@ f(x,y) &= \frac{3}{4}\exp{\left(-\frac{(9x-2)^2}{4} - \frac{(9y-2)^2}{4}\right)}
 Linear regression is a method in statistics that predicts the response of one or several explanatory variables. At its simplest form we could try to find the stright line between two points. This equation is fairly simple.
 
 \begin{equation}
-\hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \epsilon
+\hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \hat{\epsilon}
 \end{equation}
 
-Here $\hat{y}$ is a dependent variable, the outcome, $x$ is an independent variable, or the predictor, and $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ the intercept and slope respectively. $\epsilon$ is the error in our prediction. \\
+Here $\hat{y}$ is a dependent variable, the outcome, $x$ is an independent variable, or the predictor, and $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ the intercept and slope respectively. $\epsilon$ is the error in our prediction. The solution for $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ in this problem is best found with least square and is also fairly easy.\\
 If we had several predictors we could extend our problem to a more general case.
 
 \begin{equation}
 \hat{y} = f(X) = \beta_{0} + \sum_{j=1}^{p} X_{j} \beta_{j}
 \end{equation}
 
-Now $X$ is a vector containing all predictors, $X^{\top} = \{X_0, X_1, X_2, X_3,..., X_p\}$, $\beta_0$ is the intercept and $\beta_j$ is a vector keeping all coefficients for each predictor, the parameters we are searching for. Moving $\beta_0$ to the $\beta-\textnormal{vector}$ and adding an extra column with 1's to the design matrix $X^{\top}$ we can reduce the problem to vector form and get the following.
-
+Now $X$ is a vector containing all predictors, $X^{\top} = \{X_0, X_1, X_2, X_3,..., X_p\}$, $\beta_0$ is the intercept and $\beta_j$ is a vector keeping all coefficients for each predictor, the parameters we are searching for. $\hat{y}$ is the predicted values of $y = f(X)$. Moving $\beta_0$ to the $\beta-\textnormal{vector}$ and adding an extra column with 1's to the design matrix $X^{\top}$ we can reduce the problem to vector form and get the following. We will make use of this notation when finding solutions using least square etc. 
 
 \begin{equation}
 \hat{y} = \hat{X} \hat{\beta} + \epsilon
 \end{equation}
 
+In our case we want to search for a solution that is non-linear, as the Franke funciton \ref{eq:frank} is not linear. Instead we must look for a polynomial of higher degree. For the i'th $y$-value the equation is given below.
+
 \begin{equation}
 y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^{2} + \beta_3 x_i^{3} + \beta_4 x_i^{4} + ... + \beta_d x_i^{d}
 \end{equation}
 
+For this problem the design matrix will look like the following.
+
+\begin{equation}
+\mathbf{X} = 
+\begin{bmatrix}
+1 & x_1 & x_1^2 & \dots  & x_1^d \\
+1 & x_2 & x_2^2 & \dots  & x_2^d \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_i & x_i^2 & \dots  & x_i^d
+\end{bmatrix}
+\end{equation}
+
+In addition our function depends on both $x$ and $y$, so we have two variable that have polynomail features. These may also have interacting terms and therefore we must add interaction between the two variables. Thus our design matrix up to degree $d$ looks like eq \ref{eq:designmatrix}.
+
+\begin{equation}\label{eq:designmatrix}
+\mathbf{X} = 
+\begin{bmatrix}
+1 & x_1 & y_1 & x_1^2 & x_1y_1 & y_1^2 & \dots  & y_1^d \\
+1 & x_2 & y_2 & x_2^2 & x_2y_2 & y_2^2 & \dots  & y_2^d \\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+1 & x_i & y_i & x_i^2 & x_iy_i & y_i^2 & \dots  & y_i^d
+\end{bmatrix}
+\end{equation}
+
+This is the matrix we use to solve our problem at hand, and denpending on the matrix having full column rank and the propertie $\mathbf{X}\mathbf{X^{\top}}$ being postive definit we will look at separate methods for finding solutions.
 
 \subsection*{Ordinary Least Square}
+
+The least square methods 
 
 \begin{equation}
 \textnormal{RSS}(\beta) = \sum_{i=1}^{N} (y_i - x_i^{\top}\beta)^2
