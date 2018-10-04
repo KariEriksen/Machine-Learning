@@ -86,7 +86,7 @@ If we have several predictors we can extend our problem to a more general case.
 
 Now $X$ is a vector containing all predictors, $X^{\top} = \{X_0, X_1, X_2, X_3,..., X_p\}$, $\beta_0$ is the intercept and $\beta_j$ is a vector keeping all coefficients for each predictor, the parameters we are searching for. $\hat{y}$ is the predicted values of $y = f(X)$. Moving $\beta_0$ to the $\beta-\textnormal{vector}$ and adding an extra column with 1's to the design matrix $X^{\top}$ we can reduce the problem to vector form and get the following. We will make use of this notation when finding solutions using least square etc. 
 
-\begin{equation}
+\begin{equation} \label{eq:y_predict}
 \hat{y} = \hat{X} \hat{\beta} + \epsilon
 \end{equation}
 
@@ -130,6 +130,10 @@ The least square method selects the parameters $\beta$ so that residual sum of s
 \textnormal{RSS}(\beta) = \sum_{i=1}^{N} (y_i - x_i^{\top}\beta)^2
 \end{equation}
 
+$y_i$ is still the independent variable, and $x_i^{\top}\beta$ represents the prediction of outcome given the calculated parameter $\beta$. And the difference between these variables squared gives us the RSS of the parameter $\beta$. $\beta$ is a vector $p + 1$ long, the number of features (plus the intercept) in the design matrix. 
+
+This can be expressed in matrix notation, using eq. \ref{eq:y_predict}. To find an expression for the $\beta$-parameter we look for the minimum of the RSS, meaning we take its derivative wrt. $\beta$.
+
 \begin{equation}
 \textnormal{RSS}(\beta) = (\mathbf{y} - \mathbf{X}\beta)^{\top}(\mathbf{y} - \mathbf{X}\beta)
 \end{equation}
@@ -146,10 +150,18 @@ The least square method selects the parameters $\beta$ so that residual sum of s
 \hat{\beta} = (\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\mathbf{y}
 \end{equation}
 
+This is the expresion we use in the ordinary least square-method in order to find the optimal $\beta$-values. This method depends on the propertie $\mathbf{X^{\top}}\mathbf{X}$ being postive definit in order to be able to calculate its inverse. In case it is not we must use other method.
+
 \subsection*{Ridge Regression}
 
+As mentioned in the section above we may come across problems where the columns in $X$ are not linear independent. Then the coefficients in $\beta$ are not uniquely defined through least square. One way to solve this is by Ridge regression.
+
 \begin{equation}
-\hat{y} = \hat{X} \hat{\beta} + \epsilon
+\hat{\beta}^{ridge} = \textnormal{argmin}_{\beta} \left \{ \sum_{i=1}^{N} (y_i - \beta_0 - \sum_{j=1}^{p} x_{ij} \beta_j)^2 + \lambda \sum_{j=1}^{p} \beta_j^2 \right \}
+\end{equation}
+
+\begin{equation}
+\mathbf{X}^{\top}\mathbf{X} \ \rightarrow \ \mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I}_{pp}
 \end{equation}
 
 \begin{equation}
@@ -157,6 +169,10 @@ The least square method selects the parameters $\beta$ so that residual sum of s
 \end{equation}
 
 \subsection*{Lasso Regression}
+
+\begin{equation}
+\hat{\beta}^{lasso} = \textnormal{argmin}_{\beta} \left \{ \frac{1}{2} \sum_{i=1}^{N} (y_i - \beta_0 - \sum_{j=1}^{p} x_{ij} \beta_j)^2 + \lambda \sum_{j=1}^{p} |\beta_j| \right \}
+\end{equation}
 
 
 \section*{Resampling method}
