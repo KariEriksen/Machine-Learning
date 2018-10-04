@@ -14,7 +14,7 @@ import sys
 
 from linear_regression import My_Linear_Regression 
 #from My_Linear_Regression import My_OLS, My_Ridge, My_Lasso
-#from bootstrap import Bootstrap 
+from bootstrap import Bootstrap 
 
 # Read command line arguments ('method', number of x and y values, alpha parameter)
 
@@ -56,17 +56,23 @@ noise = np.random.random_sample((n,))
 z = FrankeFunction(x, y) 
 
 # Do linear regression
+"""
 lr = My_Linear_Regression(X_fit, None, z, alpha)
-z_predict = lr.My_OLS()
+lr.My_OLS()
+z_predict = lr.My_Predict(X_fit)
 
 diff = z - z_predict
-MSE = 1/(n*n)*(sum(diff*diff))
+MSE = 1.0/(n*n)*(sum(diff*diff))
 print (MSE)
 
+print ('z = %s' % z)
+print ('      ')
+print ('z_predict = %s' % z_predict)
+"""
 # Do bootstrap 
-#boot = Bootstrap(X_fit, z, B, alpha, split, method)
-#MSE = My_Bootstrap()
-
+boot = Bootstrap(X_fit, z, B, alpha, split, method)
+MSE = boot.My_Bootstrap()
+print (MSE)
 
 
 

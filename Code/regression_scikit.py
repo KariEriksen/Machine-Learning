@@ -75,7 +75,7 @@ z_new = np.reshape(z_predict, (n, n))
 
 MSE_scikit = mean_squared_error(z_n, z_predict)
 diff = z_n - z_predict
-MSE = 1/(n*n)*(sum(diff*diff))
+MSE = 1.0/(n*n)*(sum(diff*diff))
 
 print ('MSE_scikit = %s' % MSE_scikit)
 print ('MSE = %s' % MSE)

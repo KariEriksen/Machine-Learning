@@ -2,15 +2,16 @@ from sklearn.linear_model import Ridge, Lasso
 import numpy as np
 
 class My_Linear_Regression:
-	def __init__(self, X_training, X_test, z, alpha):
+	def __init__(self, X_training, X_test, z_training, alpha):
 		self.X_training = X_training
 		self.X_test = X_test
-		self.z = z
+		self.z_training = z_training
 		self.alpha = alpha	
 
 		"""
 		Check if the data sample is split in to training
-		and test data. If not, then the two variables are 		the same and we do at fit and predict on the same
+		and test data. If not, then the two variables are 		
+		the same and we do at fit and predict on the same
 		data.
 		"""
 		#if X_test == None:
@@ -34,7 +35,9 @@ class My_Linear_Regression:
 		"""
 
 		# Calculate the Ordinary Least Square             
-		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z_training)
+
+		#print (self.beta)
 		
 		#return z_predict
 
@@ -46,7 +49,7 @@ class My_Linear_Regression:
 		"""
 
 		# Calculate the Ridge regression
-		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z_training)
 		#z_predict = self.X_test.dot(beta)
 		
 		#return z_predict
@@ -57,15 +60,15 @@ class My_Linear_Regression:
 		#lasso = Lasso(alpha)
 		#beta = lasso.fit(X_training, z_n)
 		#z_predict = lasso.predict(X_test)
-		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z_training)
 		#return z_predict
 
 	def My_Predict(self, X_test):
-		if X_test == None:
-			self.X_test = self.X_training	
+		#if X_test == None:
+			#self.X_test = self.X_training	
 		
-		z_predict = self.X_test.dot(self.beta)
-		
+		z_predict = X_test.dot(self.beta)
+		#print (z_predict)
 		return z_predict
 
 		
