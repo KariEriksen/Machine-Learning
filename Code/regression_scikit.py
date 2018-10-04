@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error
 import sys
 
 fig = plt.figure()
+ax = fig.gca(projection='3d')
 
 # Read command line arguments ('method', number of x and y values, degree of polynom, alpha parameter)
 
@@ -80,6 +81,21 @@ print ('MSE_scikit = %s' % MSE_scikit)
 print ('MSE = %s' % MSE)
 
 
+# Plot the surface.
+surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm,
+linewidth=0, antialiased=False)
+# Customize the z axis.
+ax.set_zlim(-0.10, 1.40)
+ax.zaxis.set_major_locator(LinearLocator(10))
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+# Add a color bar which maps values to colors.
+fig.colorbar(surf, shrink=0.5, aspect=5, pad=0.1)
+ax.text2D(0.25, 0.95, "Surface plot of Franke function", transform=ax.transAxes)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('f(x,y)')
+plt.show()
+"""
 # Plot the surface 
 ax = fig.add_subplot(2, 1, 1, projection='3d')
 surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm,
@@ -101,8 +117,8 @@ ax.set_zlim(-0.10, 1.40)
 ax.zaxis.set_major_locator(LinearLocator(10))
 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
-
-#plt.show()
+"""
+plt.show()
 
 
 
