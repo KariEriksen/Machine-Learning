@@ -189,16 +189,23 @@ We can see from eq. \ref{eq:b_ridge} that the method assumes our design matrix i
 
 \subsection*{Lasso Regression}
 
+In 1996 Tibshirani suggested a new penalty, the Lasso. Similar to ridge regression but the difference lies in the last part.  
+
 \begin{equation}
-\hat{\beta}^{lasso} = \textnormal{argmin}_{\beta} \left \{ \frac{1}{2} \sum_{i=1}^{N} (y_i - \beta_0 - \sum_{j=1}^{p} x_{ij} \beta_j)^2 + \lambda \sum_{j=1}^{p} |\beta_j| \right \}
+\hat{\beta}^{lasso} = \textnormal{argmin}_{\beta} \left \{ \sum_{i=1}^{N} (y_i - \beta_0 - \sum_{j=1}^{p} x_{ij} \beta_j)^2 + \lambda \sum_{j=1}^{p} |\beta_j| \right \}
 \end{equation}
 
+As for the ridge regression the intercept is given by the mean of $y$.
 
 \section*{Resampling method}
 
 \subsection*{Estimating statistical errors}
 
-MSE
+\begin{align}
+\textnormal{MSE} &= \frac{1}{N} \sum_{i=1}^N (y_i - \hat{y_i})^2 \\
+&= \frac{1}{N} \sum_{i=1}^N (\hat{y_i} - \bar{\hat{y_i}})^2 + \frac{1}{N} \sum_{i=1}^N (y_i - \bar{\hat{y_i}})^2 + \frac{1}{N} \sum_{i=1}^N (y_i - \bar{\hat{y_i}})(\bar{\hat{y_i}} - \hat{y}) \\
+&= Var(\hat{y}) + Bias + \epsilon
+\end{align}
 
 $R^2$
 
@@ -217,6 +224,10 @@ Hope I get some results...
 \section*{Discussion}
 
 ..to discuss. 
+
+http://math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf
+
+https://www.jstor.org/stable/pdf/2346178.pdf
 
 http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf
 
