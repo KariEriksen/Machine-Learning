@@ -154,18 +154,37 @@ This is the expresion we use in the ordinary least square-method in order to fin
 
 \subsection*{Ridge Regression}
 
-As mentioned in the section above we may come across problems where the columns in $X$ are not linear independent. Then the coefficients in $\beta$ are not uniquely defined through least square. One way to solve this is by Ridge regression.
+As mentioned in the section above we may come across problems where the columns in $X$ are not linear independent, often an issue for problems in high dimesions. Then the coefficients in $\beta$ are not uniquely defined through least square. This was the motivation for what would be the Ridge regression, an ad hoc solution to the singularity of $\mathbf{X^{\top}}\mathbf{X}$ introduced by Hoerl and Kennard (1970).
+They suggested adding a tuning parameter $\lambda$, i.e. a penalty to the sizes of the coefficients.
 
 \begin{equation}
+\mathbf{X}^{\top}\mathbf{X} \ \rightarrow \ \mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I}
+\end{equation}
+
+By doing the replacement above we are able to calculate the inverse and can again find the expression for $\beta$ but this time through minimizing the penalized RSS. The solution for $\beta$ is eq. \ref{eq:beta}, which is now dependent on the parameter $\lambda$.
+
+\begin{equation}
+\textnormal{PRSS}(\beta) = (\mathbf{y} - \mathbf{X}\beta)^{\top}(\mathbf{y} - \mathbf{X}\beta) + \lambda ||\beta||^2
+\end{equation}
+
+\begin{equation}
+\frac{\partial \textnormal{PRSS}(\beta)}{\partial \beta} = 0 = -2 \mathbf{X}^{\top}(\mathbf{y} - \mathbf{X}\beta) + 2 \lambda \beta
+\end{equation}
+
+\begin{equation} \label{eq:beta}
+\hat{\beta}(\lambda) = (\mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^{\top}\mathbf{Y}
+\end{equation}
+
+$\mathbf{I}$ is the identity matrix, a $p \times p$ matrix, and $\lambda \in [0, \infty]$. The tuning parameter $\lambda$ determines the regularization of the problem and different $\lambda$ will give different solution to the regression problem. Our task will be to find an optimal parameter for our case.
+
+\begin{equation} \label{eq:b_ridge}
 \hat{\beta}^{ridge} = \textnormal{argmin}_{\beta} \left \{ \sum_{i=1}^{N} (y_i - \beta_0 - \sum_{j=1}^{p} x_{ij} \beta_j)^2 + \lambda \sum_{j=1}^{p} \beta_j^2 \right \}
 \end{equation}
 
-\begin{equation}
-\mathbf{X}^{\top}\mathbf{X} \ \rightarrow \ \mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I}_{pp}
-\end{equation}
+We can see from eq. \ref{eq:b_ridge} that the method assumes our design matrix is centered, the intercept does not depend on the tuning parameter. $\beta_0$ is instead found by calculating the mean of $y$.
 
 \begin{equation}
-\hat{\beta} = (\mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I}_{pp})^{-1}\mathbf{X}^{\top}\mathbf{Y}
+\beta_0 = \bar{y} = \frac{1}{N} \sum_i^N y_i
 \end{equation}
 
 \subsection*{Lasso Regression}
@@ -177,7 +196,15 @@ As mentioned in the section above we may come across problems where the columns 
 
 \section*{Resampling method}
 
+\subsection*{Estimating statistical errors}
 
+MSE
+
+$R^2$
+
+bias 
+
+variance
 
 \subsection*{Bootstrap}
 
@@ -190,5 +217,20 @@ Hope I get some results...
 \section*{Discussion}
 
 ..to discuss. 
+
+http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf
+
+\begin{thebibliography}{9}
+
+\bibitem{lamport94}
+  Leslie Lamport,
+  \textit{\LaTeX: a document preparation system},
+  Addison Wesley, Massachusetts,
+  2nd edition,
+  1994.
+  
+
+
+\end{thebibliography}
 
 \end{document}
