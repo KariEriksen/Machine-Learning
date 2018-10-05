@@ -183,7 +183,7 @@ $\mathbf{I}$ is the identity matrix, a $p \times p$ matrix, and $\lambda \in [0,
 
 We can see from eq. \ref{eq:b_ridge} that the method assumes our design matrix is centered, the intercept does not depend on the tuning parameter. $\beta_0$ is instead found by calculating the mean of $y$.
 
-\begin{equation}
+\begin{equation} \label{y_mean}
 \beta_0 = \bar{y} = \frac{1}{N} \sum_i^N y_i
 \end{equation}
 
@@ -207,7 +207,11 @@ As for the ridge regression the intercept is given by the mean of $y$.
 &= Var(\hat{y}) + Bias + \epsilon
 \end{align}
 
-$R^2$
+\begin{equation}
+\textnormal{R}^2(\hat{y}, ??) = 1 - \frac{\sum_{n}^{i=1} (y_i - \hat{y_i})^2}{\sum_{n}^{i=1}(y_i - \bar{y})^2}
+\end{equation}
+
+Where $\bar{y}$ is the same as in eq. \ref{y_mean}.
 
 bias 
 
@@ -215,7 +219,7 @@ variance
 
 \subsection*{Bootstrap}
 
-Evaluate some statistical estimates
+We discuss the following problem: given a random sample $X = (X_1, X_2,..., X_n)$ from an unknown probability distribution F, estimate the sampling distribution of som prespecified random variable, on the basis of the observed data x.
 
 \section*{Results}
 
