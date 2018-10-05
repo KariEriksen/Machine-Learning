@@ -3,11 +3,11 @@ from numpy.random import randint
 from linear_regression import My_Linear_Regression 
 
 class Bootstrap:
-    def __init__(self, X, z, B, alpha, split, method):
+    def __init__(self, X, z, B, lambd, split, method):
         self.X = X
         self.z = z
         self.B = B
-        self.alpha = alpha
+        self.lambd = lambd	
         self.split = split
         self.method = method
 	    
@@ -30,7 +30,7 @@ class Bootstrap:
         Generates sampling distribution of mean
         """
 
-	l = len(z_predict)
+        l = len(z_predict)
         t = np.zeros(l)
         for i in range(l):
             sample = z_predict[randint(0,l,l)]
@@ -44,19 +44,19 @@ class Bootstrap:
         n = np.size(self.X,0)   # size of column (number of rows)
         C = int(n*self.split)
 
-	# Shuffle the datapoint to randomized order
-	randomize = np.arange(n)
-	np.random.shuffle(randomize)
-	self.X = self.X[randomize]
-	self.z = self.z[randomize]
+        # Shuffle the datapoint to randomized order
+        randomize = np.arange(n)
+        np.random.shuffle(randomize)
+        self.X = self.X[randomize]
+        self.z = self.z[randomize]
 
         self.X_training = self.X[:C,:]
         self.X_test = self.X[C:,:]
         self.z_training = self.z[:C]
-	self.z_test = self.z[C:]
+        self.z_test = self.z[C:]
 
         # Do linear regression
-        lr = My_Linear_Regression(self.X_training, self.X_test, self.z_training, self.alpha)
+        lr = My_Linear_Regression(self.X_training, self.X_test, self.z_training, self.lambd)
 
         # Ordinary Least Square method
         if self.method == 'OLS':
