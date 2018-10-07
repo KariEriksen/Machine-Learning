@@ -45,17 +45,19 @@ class My_Linear_Regression:
 		n = np.size(self.X_training,0)   # size of column (number of rows)
 		m = np.size(self.X_training,1)   # number of columns
 		# Separate the first column in X and first value in z
-		X_new = self.X_training[:,1:]
+		X_ridge = self.X_training[:,1:]
 
 		# Calculate mean of z_training equals beta_0
 		beta_0 = 1.0/(n)*sum(self.z)
-		#I = np.identity(m-1)
-		#I_lambda = I*self.lambda_ 
+		I = np.identity(m-1)
+		I_lambda = I*self.lambda_ 
 		#X_ridge = X_new + I_lambda
-		X_ridge = self.lambda_*X_new
+		#X_ridge = self.lambda_*X_new
+		print (np.shape(X_ridge))
+		print (np.shape(I_lambda))
 		
 		# Calculate the Ridge regression
-		self.beta = np.linalg.inv(X_ridge.T.dot(X_ridge)).dot(X_ridge.T).dot(self.z)
+		self.beta = np.linalg.inv(X_ridge.T.dot(X_ridge) + I_lambda).dot(X_ridge.T).dot(self.z)
 		self.beta = np.insert(self.beta, 0, beta_0)
 
 	def My_Lasso(self):
