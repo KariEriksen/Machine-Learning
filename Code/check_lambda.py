@@ -5,15 +5,9 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import numpy as np
 import random
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-from sklearn.linear_model import Ridge, Lasso
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.pipeline import make_pipeline
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 import sys
 
 from linear_regression import My_Linear_Regression 
-#from My_Linear_Regression import My_OLS, My_Ridge, My_Lasso
 from bootstrap import Bootstrap 
 
 # Read command line arguments ('method', number of x and y values, alpha parameter)
@@ -22,10 +16,6 @@ from bootstrap import Bootstrap
 method = sys.argv[1]
 n = int(sys.argv[2])
 alpha = float(sys.argv[3])
-
-# Set some values
-B = 100
-split = 0.7
 
 # Produce data
 step = 1.0/n
@@ -56,32 +46,41 @@ noise = np.random.random_sample((n,))
 z = FrankeFunction(x, y) 
 
 # Do linear regression
+lr = My_Linear_Regression(X_fit, None, z, alpha)
+lr.My_OLS()
+z_predict = lr.My_Predict(X_fit)
 
-if method == 'OLS':
-	lr.My_OLS()
-	z_predict = lr.My_Predict(X_fit, False)
+z_new = np.reshape(z_predict, (n, n))
 
-elif method == 'Ridge':
-	lr.My_Ridge()
-	z_predict = lr.My_Predict(X_fit, False)	
+#1 subplot, plot the surface
+ax = fig.add_subplot(2, 1, 1, projection='3d')
+surf = ax.plot_surface(x, y, z, cmap=cm.coolwarm,
+linewidth=0, antialiased=False)
 
-elif method == 'Lasso':
-	lr.My_Lasso()
-	z_predict = lr.My_predict(X_fit, True)
-	
-diff = z - z_predict
-MSE = 1.0/(n*n)*(sum(diff*diff))
-print (MSE)
+# Customize the z axis.
+ax.set_zlim(-0.10, 1.40)
+ax.zaxis.set_major_locator(LinearLocator(10))
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
 
-#print ('z = %s' % z)
-#print ('      ')
-#print ('z_predict = %s' % z_predict)
+# Add a color bar which maps values to colors.
+fig.colorbar(surf, shrink=0.5, aspect=5, pad=0.1)
 
-# Do bootstrap 
-#boot = Bootstrap(X_fit, z, B, alpha, split, method)
-#MSE = boot.My_Bootstrap()
-#print (MSE)
+# Add title and labels
+ax.text2D(0.25, 0.95, "Surface plot of Franke function", transform=ax.transAxes)
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+ax.set_zlabel('f(x,y)')
 
+#2 subplot, plot the regression fit
+ax = fig.add_subplot(2, 1, 2, projection='3d')
+ax.plot_surface(x, y, z_new, cmap=cm.coolwarm,
+linewidth=0, antialiased=False)
+
+ax.set_zlim(-0.10, 1.40)
+ax.zaxis.set_major_locator(LinearLocator(10))
+ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+
+plt.show()
 
 
 
