@@ -50,7 +50,8 @@ class Bootstrap:
         t = len(self.z_test)
         # Ordinary Least Square method
         if self.method == 'OLS':
-            m = np.zeros((self.B,t))	
+            m = np.zeros((self.B,t))
+            mean_z_vector = np.zeros(self.B)	
             for i in range(self.B):
                 index = randint(0, C, C)
                 X_resample = self.X_training[index]
@@ -59,31 +60,51 @@ class Bootstrap:
                 lr.My_OLS()
                 z_predict = lr.My_Predict(self.X_test, False)
                 m[i,:] = z_predict
+                #mean_z_vector[i] = 1.0/t*sum(z_predict)
 
+            error = np.mean(np.mean((self.z_test - m)**2, axis=1, keepdims=True) )
+            bias = np.mean((self.z_test - np.mean(m, axis=1, keepdims=True))**2 )
+            variance = np.mean(np.var(m, axis=1, keepdims=True) )
+            MSE = np.mean((self.z_test - np.mean(m, axis=1, keepdims=True))**2 )
             # Calculate different statistical properties
-            mean_z =  1.0/t*sum(z_predict)
+            """
+            mean_z =  1.0/t*sum(mean_z_vector)
             bias =    1.0/t*sum((self.z_test - mean_z)**2)
-            var =     1.0/t*sum((z_predict - mean_z)**2)
-            MSE =     1.0/t*sum((self.z_test - z_predict)**2)
-            doubleR = 1.0 - (sum((self.z_test - z_predict)**2)/sum((self.z_test - mean_z)**2)) 
-        	
+            var =     1.0/t*sum((mean_z_vector - mean_z)**2)
+            MSE =     1.0/t*sum((self.z_test - mean_z_vector)**2)
+            doubleR = 1.0 - (sum((self.z_test - mean_z_vector)**2)/sum((self.z_test - mean_z)**2)) 
+            """
+            print ('Statistical properties')
+            print ('                      ') 
+            print ('Bias = %s' % bias)
+            print ('Variance = %s' % variance) 
+            print ('Error = %s' % error) 
+            print ('MSE = %s' % MSE) 
+            #print ('doubleR = %s' % doubleR) 
+
         # Ridge regression
         elif self.method == 'Ridge':
-            z_predict = lr.My_Ridge()
-            m = zeros(B)	
-            for i in range(B):
-                z_predict = lr.My_Predict(self.X_test)			
-                t = self.My_Bootstrap_Method(z_predict)
-                m[i] = mean(t)
+            m = np.zeros((self.B,t))	
+            for i in range(self.B):
+                index = randint(0, C, C)
+                X_resample = self.X_training[index]
+                z_resample = self.z_training[index]
+                lr = My_Linear_Regression(X_resample, self.X_test, z_resample, self.lambda_)
+                lr.My_Ridge()
+                z_predict = lr.My_Predict(self.X_test, False)
+                m[i,:] = z_predict
         
         #Lasso regression
         elif self.method == 'Lasso':
-            z_predict = lr.My_Lasso()
-            m = zeros(B)	
-            for i in range(B):
-                z_predict = lr.My_Predict(self.X_test)
-                t = self.My_Bootstrap_Method(z_predict)
-                m[i] = mean(t)
+            m = np.zeros((self.B,t))	
+            for i in range(self.B):
+                index = randint(0, C, C)
+                X_resample = self.X_training[index]
+                z_resample = self.z_training[index]
+                lr = My_Linear_Regression(X_resample, self.X_test, z_resample, self.lambda_)
+                lr.My_Lasso()
+                z_predict = lr.My_Predict(self.X_test, True)
+                m[i,:] = z_predict
         
         else:
             print('You have forgotten to select method; OLS, Ridge or Lasso.')

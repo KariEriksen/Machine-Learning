@@ -76,6 +76,14 @@ print (MSE)
 boot = Bootstrap(X_fit, z, B, lambda_, split, method)
 boot.My_Bootstrap()
 
+# Calculate different statistical properties
+"""
+mean_z =  1.0/t*sum(z_predict)
+bias =    1.0/t*sum((self.z_test - mean_z)**2)
+var =     1.0/t*sum((z_predict - mean_z)**2)
+MSE =     1.0/t*sum((self.z_test - z_predict)**2)
+doubleR = 1.0 - (sum((self.z_test - z_predict)**2)/sum((self.z_test - mean_z)**2))
+"""
 
 
 
