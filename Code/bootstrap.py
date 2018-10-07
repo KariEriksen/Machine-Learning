@@ -3,15 +3,15 @@ from numpy.random import randint
 from linear_regression import My_Linear_Regression 
 
 class Bootstrap:
-    def __init__(self, X, z, B, lambd, split, method):
+    def __init__(self, X, z, B, lambda_, split, method):
         self.X = X
         self.z = z
         self.B = B
-        self.lambd = lambd	
+        self.lambda_ = lambda_	
         self.split = split
         self.method = method
 	    
-    def My_Bootstrap_Method(self, z_predict):
+    def My_Bootstrap(self):
 
         """
         Bootstrap class
@@ -30,15 +30,6 @@ class Bootstrap:
         Generates sampling distribution of mean
         """
 
-        l = len(z_predict)
-        t = np.zeros(l)
-        for i in range(l):
-            sample = z_predict[randint(0,l,l)]
-            t[i] = (1/l)*np.sum(sample)
-        return t
-
-
-    def My_Bootstrap(self):
         # Split the data according to the given decimal percentage
         # split = amount of data set to training
         n = np.size(self.X,0)   # size of column (number of rows)
@@ -56,16 +47,25 @@ class Bootstrap:
         self.z_test = self.z[C:]
 
         # Do linear regression
-        lr = My_Linear_Regression(self.X_training, self.X_test, self.z_training, self.lambd)
-
+        t = len(self.z_test)
         # Ordinary Least Square method
         if self.method == 'OLS':
-            lr.My_OLS()
-            m = np.zeros(self.B)	
+            m = np.zeros((self.B,t))	
             for i in range(self.B):
-                z_predict = lr.My_Predict(self.X_test)
-                t = self.My_Bootstrap_Method(z_predict)
-                m[i] = (1.0/self.B)*sum(t)
+                index = randint(0, C, C)
+                X_resample = self.X_training[index]
+                z_resample = self.z_training[index]
+                lr = My_Linear_Regression(X_resample, self.X_test, z_resample, self.lambda_)
+                lr.My_OLS()
+                z_predict = lr.My_Predict(self.X_test, False)
+                m[i,:] = z_predict
+
+            # Calculate different statistical properties
+            mean_z =  1.0/t*sum(z_predict)
+            bias =    1.0/t*sum((self.z_test - mean_z)**2)
+            var =     1.0/t*sum((z_predict - mean_z)**2)
+            MSE =     1.0/t*sum((self.z_test - z_predict)**2)
+            doubleR = 1.0 - (sum((self.z_test - z_predict)**2)/sum((self.z_test - mean_z)**2)) 
         	
         # Ridge regression
         elif self.method == 'Ridge':
@@ -93,10 +93,10 @@ class Bootstrap:
         
         # Calculate the Mean Square Error
         #diff = self.z - self.z_predict
-        diff = np.mean(self.z) - np.mean(m)
-        MSE = 1.0/(n*n)*(diff*diff)
+        #diff = np.mean(self.z) - np.mean(m)
+        #MSE = 1.0/(n*n)*(diff*diff)
         
-        return MSE
+        return m
 
 
 

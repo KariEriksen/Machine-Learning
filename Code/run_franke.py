@@ -4,16 +4,9 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import numpy as np
 import random
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
-from sklearn.linear_model import Ridge, Lasso
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.pipeline import make_pipeline
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 import sys
 
 from linear_regression import My_Linear_Regression 
-#from My_Linear_Regression import My_OLS, My_Ridge, My_Lasso
 from bootstrap import Bootstrap 
 
 # Read command line arguments ('method', number of x and y values, alpha parameter)
@@ -21,7 +14,7 @@ from bootstrap import Bootstrap
 # Take in command line arguments
 method = sys.argv[1]
 n = int(sys.argv[2])
-alpha = float(sys.argv[3])
+lambda_ = float(sys.argv[3])
 
 # Set some values
 B = 100
@@ -56,6 +49,8 @@ noise = np.random.random_sample((n,))
 z = FrankeFunction(x, y) 
 
 # Do linear regression
+"""
+lr = My_Linear_Regression(X_fit, None, z, lambda_)
 
 if method == 'OLS':
 	lr.My_OLS()
@@ -72,15 +67,15 @@ elif method == 'Lasso':
 diff = z - z_predict
 MSE = 1.0/(n*n)*(sum(diff*diff))
 print (MSE)
-
+"""
 #print ('z = %s' % z)
 #print ('      ')
 #print ('z_predict = %s' % z_predict)
 
 # Do bootstrap 
-#boot = Bootstrap(X_fit, z, B, alpha, split, method)
-#MSE = boot.My_Bootstrap()
-#print (MSE)
+boot = Bootstrap(X_fit, z, B, lambda_, split, method)
+boot.My_Bootstrap()
+
 
 
 

@@ -51,10 +51,6 @@ class My_Linear_Regression:
 		beta_0 = 1.0/(n)*sum(self.z)
 		I = np.identity(m-1)
 		I_lambda = I*self.lambda_ 
-		#X_ridge = X_new + I_lambda
-		#X_ridge = self.lambda_*X_new
-		print (np.shape(X_ridge))
-		print (np.shape(I_lambda))
 		
 		# Calculate the Ridge regression
 		self.beta = np.linalg.inv(X_ridge.T.dot(X_ridge) + I_lambda).dot(X_ridge.T).dot(self.z)
