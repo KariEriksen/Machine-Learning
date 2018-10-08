@@ -65,6 +65,19 @@ elif method == 'Lasso':
 	z_predict = lr.My_Predict(X_fit, True)
 
 
+MSE = np.mean((z - z_predict)**2)
+bias = np.mean((z - np.mean(z_predict))**2)
+variance = np.mean(np.var(z_predict))
+doubleR = 1.0 - sum((z - z_predict)**2)/sum((z_predict - np.mean(z_predict))**2)
+
+print ('Statistical properties')
+print ('                      ') 
+print ('Bias = %s' % bias)
+print ('Variance = %s' % variance) 
+print ('MSE = %s' % MSE) 
+print ('Bias + Variance = %s' % (bias + variance)) 
+print ('R2 = %s' % doubleR) 
+
 x = np.reshape(x, (n, n))
 y = np.reshape(y, (n, n))
 z = np.reshape(z, (n, n))
@@ -102,7 +115,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('ẑ')
 
-plt.show()
+#plt.show()
 
 
 

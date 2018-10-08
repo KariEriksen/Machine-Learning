@@ -69,26 +69,29 @@ diff = z - z_predict
 MSE = 1.0/(n*n)*(sum(diff*diff))
 print (MSE)
 """
-#print ('z = %s' % z)
-#print ('      ')
-#print ('z_predict = %s' % z_predict)
 
 # Do bootstrap 
 boot = Bootstrap(X_fit, z, B, lambda_, split, method)
 m, z_test = boot.My_Bootstrap()
 
+#print (z_test)
+
+z_mat = np.tile(z_test, (B, 1))
+
 # Calculate different statistical properties
 MSE = np.mean(np.mean((z_test - m)**2, axis=1, keepdims=True) )
 bias = np.mean((z_test - np.mean(m, axis=1, keepdims=True))**2 )
 variance = np.mean(np.var(m, axis=1, keepdims=True) )
+doubleR = 1.0 - sum((sum((z_mat - m)**2))/sum(sum((z_mat - np.mean(m, axis=1, keepdims=True))**2)))
 #R2 = np.mean(doubleR)
+"""
 a = (z_test - m)**2
 b = (z_test - np.mean(z_test))**2
 sum1 = a.sum(axis=1)
-sum2 = sum1.sum(axis=0)
+sum2 = sum1.sum()
 sum3 = b.sum()
-doubleR = 1.0 - sum2/sum3
-
+doubleR = 1.0 - (float(sum2)/float(sum3))
+"""
 print ('Statistical properties')
 print ('                      ') 
 print ('Bias = %s' % bias)
@@ -106,8 +109,8 @@ n, binsboot, patches = plt.hist(mean_m, 50, normed=1, facecolor='red', alpha=0.7
 
 t = mlab.normpdf( binsboot, np.mean(mean_m), np.std(mean_m))  
 lt = plt.plot(binsboot, t, 'r--', linewidth=1)
-
-plt.xlabel('Mean z_predict')
+plt.title('Mean of z_predict using Bootstrap, 100 iterations')
+plt.xlabel('Mean predicted z')
 plt.ylabel('Probability')
                                                                                                              
 #plt.axis([99.5, 100.6, 0, 3.0])
