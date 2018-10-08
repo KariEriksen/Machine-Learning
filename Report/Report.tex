@@ -201,7 +201,7 @@ As for the ridge regression the intercept is given by the mean of $y$.
 
 \subsection*{Estimating statistical errors}
 
-\begin{align}
+\begin{align} \label{eq:MSE}
 \textnormal{MSE} &= \frac{1}{N} \sum_{i=1}^N (y_i - \hat{y_i})^2 \\
 &= \frac{1}{N} \sum_{i=1}^N (\hat{y_i} - \bar{\hat{y_i}})^2 + \frac{1}{N} \sum_{i=1}^N (y_i - \bar{\hat{y_i}})^2 + \frac{1}{N} \sum_{i=1}^N (y_i - \bar{\hat{y_i}})(\bar{\hat{y_i}} - \hat{y}) \\
 &= Var(\hat{y}) + Bias + \epsilon
@@ -216,16 +216,16 @@ Where $\bar{y}$ is the same as in eq. \ref{y_mean}.
 
 \subsection*{Bootstrap}
 
-The bootstrap is a resampling method that tell us how well our regression models assess the problem at hand. To say something about this it is commen to calculate the statistical properties given in the section above, particularly the MSE.  
+The bootstrap is a resampling method that tell us how well our regression models assess the problem at hand. To say something about this it is commen to calculate the statistical properties given in the section above, particularly the MSE. As we can see from eq. \ref{eq:MSE} this is a measurment consisting of three properties. The variance, the bias and the irreducible error.	\\
+In machine learning phenomena such as overfitting and underfitting are highly important to be aware of and is connected with the MSE. Our goal is to predict the outcome $\hat{y}$ given some observed data. To do so we split our data into a training set and a test set and train the model with the training data. Depending on how well we fit our model to the training data we may overfit or underfit. Overfitting means that we fit the data so well that we have made the model to close and dependent on the training data. 
+On the other hand we can underfit, meaning that we miss many important features of the data. In both cases trying the model out on the test set we get bad results.  
 
 variance corresponds to overfitting 
 tells how the predicted values differ from the mean.
 bias corresponds to underfitting 
 difference between the 	models predicted value and the 'true' value.
 
- 
-Given the data in $\mathbf{X}$ we want to predict the values of $y$ by calculating the coefficients in $\beta$. 
-Usually we have no 
+
 
 where we draw sample values with replacement from a datasample of some experiment ex. Normaly we would not know the 
 
