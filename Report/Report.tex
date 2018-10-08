@@ -22,7 +22,7 @@
 \textsc{Kari Eriksen}\\[1.0cm]
 
 \begin{abstract}
-Here is my abstract going to be
+We studie three different regression methods, OLS, ridge and lasso. For all methods we observe a high bias and low variance. In order to fit the frank function we must up to a 5th order polynomial to get a reasonable fit. With added noise all methods are are able to predict the problem very well. However there have been some difficulties with producing data and plots. The section with results is therefore quite short.
 \end{abstract}
 
 \end{center}
@@ -224,28 +224,86 @@ Since our predictor is a random variable, how we draw the data will effect the e
 
 \section*{Results}
 
-Hope I get some results...
+\begin{center}
+	\begin{tabular}{c c c c}
+	 & OLS & Ridge & Lasso \\
+	\hline
+	R2, $lambda = 0.01$ & 0.075 & 0.0601 & 0.05 \\
+	\hline
+	R2, $lambda = 0.1$ & 0.075 & 0.062 & -1.998E-15 \\
+	\hline
+	\hline
+	\end{tabular}
+\end{center}
+
+In figure \ref{fig:ridge} we see plots of the franke function with added noise and below regression fit using ridge with $\lambda = 0.01$. We notice that the penalty must be quite low in order for the method to give reasonable results. But here the fit looks very well, with polynomial degree of 7'th order. This result is the same for all three methods. \\
+A representation of the bias-variance tradoff can be seen in figure \ref{fig:bias}. We observe the methods have a much higher bias than variance, with the MSE being very close to the bias and variance almost to zero. All properties are stable. \\
+Figure \ref{fig:hist} shows a histogram of the calculated mean values of the predicted $z$-values from bootstraping. The mean values form a gaussian distribution.
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Figures/fit_ridge_7_001_noise_no_test.png}
+\caption{Regression fit of franke function with added noise using ridge up to 7th order polynomial, with 40000 datapoints.}
+\label{fig:ridge}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Figures/bias-var_tradeoff_OLS_100.png}
+\caption{Plot showing the bias-variance tradeoff for more complex model fit, using OLS with 40000 datapoints.}
+\label{fig:bias}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Figures/histogram_OLS_5th.png}
+\caption{Histogram of mean value of calculated prediction-value, using OLS and 40000 datapoints.}
+\label{fig:hist}
+\end{figure}
 
 \section*{Discussion}
 
-..to discuss. 
+The different regression methods seem to work well, but looking at the R-score for the lasso method with high $\lambda$ we get a very low score, suggesting that this method work much greater than the two others. The lasso regression is implemented using the scikit-learn library, where as both OLS and ridge uses the linalg library of numpy. There might be some errors in the implementation of these two other methods.
+From the figure in \ref{fig:ridge} we see that the regression workes quite well. Calculating statistical values such as MSE however suggests that the methods are predicting the problem poorly, with a MSE as high as 1.\\
+Unfortunately there was no time to test the methods on the real terrain data. \\
+Also a calculation of the $\beta$-coefficients with different penalty would also give some indicatin on how well our method works. \\
 
-http://math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf
 
-https://www.jstor.org/stable/pdf/2346178.pdf
-
-http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf
+\newpage
 
 \begin{thebibliography}{9}
 
-\bibitem{lamport94}
-  Leslie Lamport,
-  \textit{\LaTeX: a document preparation system},
-  Addison Wesley, Massachusetts,
+\bibitem{elem}
+  Trevor Hastie,
+  \textit{The Elements of Statistical Learning},
+  Springer, New York,
   2nd edition,
-  1994.
-  
+  2009.
 
+\bibitem{IntroStat}
+  Gareth James, 
+  \textit{An Introduction to Statistical Learning},
+  Springer, New York,
+  2013.
+  
+\bibitem{morten}
+  \url{https://compphysics.github.io/MachineLearning/doc/pub/Regression/html/._Regression-bs000.html}, 08/10-18.
+  
+\bibitem{berk}
+  \url{https://ml.berkeley.edu/blog/2017/07/13/tutorial-4/}, 08/10-18.
+  
+\bibitem{high-bias}
+  \url{https://arxiv.org/pdf/1803.08823.pdf,}, 08/10-18.
+  
+\bibitem{lasso}
+  \url{https://www.jstor.org/stable/pdf/2346178.pdf}, 08/10-18.
+ 
+\bibitem{ridge}
+  \url{http://math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf}, 08/10-18.
+  
+\bibitem{reg}
+  \url{http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf}, 08/10-18.
+  
 
 \end{thebibliography}
 
