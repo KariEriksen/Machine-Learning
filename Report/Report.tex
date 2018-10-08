@@ -172,7 +172,7 @@ By doing the replacement above we are able to calculate the inverse and can agai
 \end{equation}
 
 \begin{equation} \label{eq:beta}
-\hat{\beta}(\lambda) = (\mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^{\top}\mathbf{Y}
+\hat{\beta}(\lambda) = (\mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^{\top}\mathbf{y}
 \end{equation}
 
 $\mathbf{I}$ is the identity matrix, a $p \times p$ matrix, and $\lambda \in [0, \infty]$. The tuning parameter $\lambda$ determines the regularization of the problem and different $\lambda$ will give different solution to the regression problem. Our task will be to find an optimal parameter for our case.
@@ -216,7 +216,20 @@ Where $\bar{y}$ is the same as in eq. \ref{y_mean}.
 
 \subsection*{Bootstrap}
 
-The bootstrap is a resampling method where we draw sample values with replacement from a datasample of some experiment ex. For each time we draw new samples from the 
+The bootstrap is a resampling method that tell us how well our regression models assess the problem at hand. To say something about this it is commen to calculate the statistical properties given in the section above, particularly the MSE.  
+
+variance corresponds to overfitting 
+tells how the predicted values differ from the mean.
+bias corresponds to underfitting 
+difference between the 	models predicted value and the 'true' value.
+
+ 
+Given the data in $\mathbf{X}$ we want to predict the values of $y$ by calculating the coefficients in $\beta$. 
+Usually we have no 
+
+where we draw sample values with replacement from a datasample of some experiment ex. Normaly we would not know the 
+
+For each time we draw new samples from the 
 
 training data 
 
