@@ -9,6 +9,7 @@ import sys
 
 from linear_regression import My_Linear_Regression 
 from bootstrap import Bootstrap 
+from design_matrix import Design_Matrix
 
 fig = plt.figure()
 #ax = fig.gca(projection='3d')
@@ -33,54 +34,9 @@ y = np.reshape(y, np.size(y))
 
 d = poly_degree
 
-
-
 # Fit the design matrix
-if d == 1:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, x*y]
-
-elif d == 2:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2]  
-
-elif d == 3:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3]    
-
-elif d == 4:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3, \
-		      x**4, x**3*y, x**2*y**2, x*y**3, y**4] 
-
-elif d == 5:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3, \
-		      x**4, x**3*y, x**2*y**2, x*y**3, y**4, \
-		      x**5, x**4*y, x**3*y**2, x**2*y**3, x*y**4, y**5]  
-
-elif d == 7:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3, \
-		      x**4, x**3*y, x**2*y**2, x*y**3, y**4, \
-		      x**5, x**4*y, x**3*y**2, x**2*y**3, x*y**4, y**5, \
-		      x**6, x**5*y, x**4*y**2, x**3*y**3, x**2*y**4, x*y**5, y**6, \
-		      x**7, x**6*y, x**5*y**2, x**4*y**3, x**3*y**4, x**2*y**5, x*y**6, y**7]      
-
-elif d == 10:
-	X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3, \
-		      x**4, x**3*y, x**2*y**2, x*y**3, y**4, \
-		      x**5, x**4*y, x**3*y**2, x**2*y**3, x*y**4, y**5, \
-                          x**6, x**5*y, x**4*y**2, x**3*y**3, x**2*y**4, x*y**5, y**6, \
-                          x**7, x**6*y, x**5*y**2, x**4*y**3, x**3*y**4, x**2*y**5, x*y**6, y**7, \
-                          x**8, x**7*y, x**6*y**2, x**5*y**3, x**4*y**4, x**3*y**5, x**2*y**6, x*y**7, y**8, \
-                          x**9, x**8*y, x**7*y**2, x**6*y**3, x**5*y**4, x**4*y**5, x**3*y**6, x**2*y**7, x*y**8, y**9, \
-                          x**10, x**9*y, x**8*y**2, x**7*y**3, x**6*y**4, x**5*y**5, x**4*y**6, x**3*y**7, x**2*y**8, x*y**9,]                                                      
+matrix = Design_Matrix(x, y, d, n)
+X_fit = matrix.fit_matrix()
 
 def FrankeFunction(x,y):
 	term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
@@ -89,8 +45,8 @@ def FrankeFunction(x,y):
 	term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
 	return term1 + term2 + term3 + term4
 
-noise = np.asarray(random.sample((range(n*n)),n*n))
-#noise = np.random.random_sample((n,))
+
+noise = np.random.normal(0, 1, n*n)
 z = FrankeFunction(x, y) + noise 
 
 # Do linear regression

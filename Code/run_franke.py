@@ -8,6 +8,7 @@ import sys
 
 from linear_regression import My_Linear_Regression 
 from bootstrap import Bootstrap 
+from design_matrix import Design_Matrix
 
 # Read command line arguments ('method', number of x and y values, alpha parameter)
 
@@ -15,6 +16,7 @@ from bootstrap import Bootstrap
 method = sys.argv[1]
 n = int(sys.argv[2])
 lambda_ = float(sys.argv[3])
+poly_degree = int(sys.argv[4])
 
 # Set some values
 B = 100
@@ -25,17 +27,16 @@ step = 1.0/n
 x = np.arange(0, 1, step)             
 y = np.arange(0, 1, step)                                             
 
-x, y = np.meshgrid(x,y)   
+x, y = np.meshgrid(x,y)
+
+d = poly_degree   
 
 x = np.reshape(x, np.size(x))
 y = np.reshape(y, np.size(y)) 
 
 # Fit the design matrix
-X_fit = np.c_[np.ones((n*n,1)), x, y, \
-		      x**2, x*y, y**2, \
-		      x**3, x**2*y, x*y**2, y**3, \
-		      x**4, x**3*y, x**2*y**2, x*y**3, y**4, \
-		      x**5, x**4*y, x**3*y**2, x**2*y**3, x*y**4, y**5]                                                     
+matrix = Design_Matrix(x, y, d, n)
+X_fit = matrix.fit_matrix()
 
 def FrankeFunction(x,y):
 	term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
@@ -44,9 +45,8 @@ def FrankeFunction(x,y):
 	term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
 	return term1 + term2 + term3 + term4
 
-#noise = np.asarray(random.sample((range(n)),n))
-noise = np.random.random_sample((n,))
-z = FrankeFunction(x, y) 
+noise = np.random.normal(0, 1, n*n)
+z = FrankeFunction(x, y) + noise
 
 # Do linear regression
 """
