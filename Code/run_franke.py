@@ -2,6 +2,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
+import matplotlib.mlab as mlab
 import numpy as np
 import random
 import sys
@@ -96,6 +97,22 @@ print ('MSE = %s' % MSE)
 print ('Bias + Variance = %s' % (bias + variance)) 
 print ('R2 = %s' % doubleR) 
 
+
+# the histogram of the bootstrapped  data 
+#plt.hist(np.mean(m, axis=1), normed=1, facecolor='red')
+mean_m = np.mean(m, axis=1)
+n, binsboot, patches = plt.hist(mean_m, 50, normed=1, facecolor='red', alpha=0.75)
+# add a 'best fit' line  
+
+t = mlab.normpdf( binsboot, np.mean(mean_m), np.std(mean_m))  
+lt = plt.plot(binsboot, t, 'r--', linewidth=1)
+
+plt.xlabel('Mean z_predict')
+plt.ylabel('Probability')
+                                                                                                             
+#plt.axis([99.5, 100.6, 0, 3.0])
+plt.grid(True)
+plt.show()
 
 
 
