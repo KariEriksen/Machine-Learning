@@ -9,28 +9,31 @@ class My_Linear_Regression:
 		self.lambda_ = lambda_	
 
 		"""
-		Check if the data sample is split in to training
-		and test data. If not, then the two variables are 		
-		the same and we do at fit and predict on the same
+
+		If the data is split into training and test data 
+		then this regression class will fit the model to 
+		the training data and test the model on the test 
 		data.
+		If it is not plit, then X_test is sent in to the 
+		class as the X_training.
+
+		###### Variables #######
+
+		X_training = training data used to fit the model
+		X_test = data to test the model on
+		z = the response
+		lambda = the penalty
 		"""
-		#if X_test == None:
-		#	self.X_test = self.X_training	
 
 	def My_OLS(self):
 
 		"""
 		Ordinary Least Square method
-	 	
-		###### Variables #######
 
-		method = the selected regression method to use
-		alpha = lambda in Ridge or Lasso regression 
-	
 		######  Method   #######
 	
-		Solves the OLS ....
-		up to fifth order
+		Solves the OLS 
+		beta = (X^TX)^-1X^Ty
 	
 		"""
 
@@ -41,6 +44,11 @@ class My_Linear_Regression:
 
 		"""
 		Ridge regression method
+
+		######  Method   #######
+	
+		Solves the ridge regression
+		beta = (X^TX + lambdaI)^-1X^Ty
 		"""
 		n = np.size(self.X_training,0)   # size of column (number of rows)
 		m = np.size(self.X_training,1)   # number of columns
@@ -58,7 +66,11 @@ class My_Linear_Regression:
 
 	def My_Lasso(self):
 
-		# Calculate the Lasso regression using scikit learn
+		"""
+		Lasso regression method
+
+		Calculate the Lasso regression using scikit learn
+		"""
 		
 		lasso = Lasso(self.lambda_)
 		self.beta = lasso.fit(self.X_training, self.z)

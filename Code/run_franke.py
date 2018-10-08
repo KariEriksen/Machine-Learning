@@ -74,16 +74,27 @@ print (MSE)
 
 # Do bootstrap 
 boot = Bootstrap(X_fit, z, B, lambda_, split, method)
-boot.My_Bootstrap()
+m, z_test = boot.My_Bootstrap()
 
 # Calculate different statistical properties
-"""
-mean_z =  1.0/t*sum(z_predict)
-bias =    1.0/t*sum((self.z_test - mean_z)**2)
-var =     1.0/t*sum((z_predict - mean_z)**2)
-MSE =     1.0/t*sum((self.z_test - z_predict)**2)
-doubleR = 1.0 - (sum((self.z_test - z_predict)**2)/sum((self.z_test - mean_z)**2))
-"""
+MSE = np.mean(np.mean((z_test - m)**2, axis=1, keepdims=True) )
+bias = np.mean((z_test - np.mean(m, axis=1, keepdims=True))**2 )
+variance = np.mean(np.var(m, axis=1, keepdims=True) )
+#R2 = np.mean(doubleR)
+a = (z_test - m)**2
+b = (z_test - np.mean(z_test))**2
+sum1 = a.sum(axis=1)
+sum2 = sum1.sum(axis=0)
+sum3 = b.sum()
+doubleR = 1.0 - sum2/sum3
+
+print ('Statistical properties')
+print ('                      ') 
+print ('Bias = %s' % bias)
+print ('Variance = %s' % variance) 
+print ('MSE = %s' % MSE) 
+print ('Bias + Variance = %s' % (bias + variance)) 
+print ('R2 = %s' % doubleR) 
 
 
 
