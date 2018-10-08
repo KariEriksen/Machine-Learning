@@ -115,7 +115,7 @@ plt.ylabel('Probability')
                                                                                                              
 #plt.axis([99.5, 100.6, 0, 3.0])
 plt.grid(True)
-plt.show()
+#plt.show()
 
 
 

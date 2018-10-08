@@ -115,7 +115,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('ẑ')
 
-#plt.show()
+plt.show()
 
 
 
