@@ -51,7 +51,8 @@ class Bootstrap:
         # Ordinary Least Square method
         if self.method == 'OLS':
             m = np.zeros((self.B,t))
-            mean_z_vector = np.zeros(self.B)	
+            doubleR = np.zeros(self.B)	
+            #mean_z =  np.mean(self.z_test)
             for i in range(self.B):
                 index = randint(0, C, C)
                 X_resample = self.X_training[index]
@@ -60,13 +61,23 @@ class Bootstrap:
                 lr.My_OLS()
                 z_predict = lr.My_Predict(self.X_test, False)
                 m[i,:] = z_predict
-                #mean_z_vector[i] = 1.0/t*sum(z_predict)
 
-            error = np.mean(np.mean((self.z_test - m)**2, axis=1, keepdims=True) )
+                #doubleR[i] = 1.0 - (sum((self.z_test - z_predict)**2)/sum((self.z_test - mean_z)**2)) 
+                #MeanSquaredError = np.mean((self.z_test - z_predict)**2)
+
+            # Calculate different statistical properties
+            MSE = np.mean(np.mean((self.z_test - m)**2, axis=1, keepdims=True) )
             bias = np.mean((self.z_test - np.mean(m, axis=1, keepdims=True))**2 )
             variance = np.mean(np.var(m, axis=1, keepdims=True) )
-            MSE = np.mean((self.z_test - np.mean(m, axis=1, keepdims=True))**2 )
-            # Calculate different statistical properties
+            #R2 = np.mean(doubleR)
+            a = (self.z_test - m)**2
+            b = (self.z_test - np.mean(self.z_test))**2
+            sum1 = a.sum(axis=1)
+            sum2 = sum1.sum()
+            sum3 = b.sum()
+            doubleR = 1.0 - sum2/sum3
+            #doubleR = 1.0 - (sum(sum((self.z_test - m))**2))/(sum((self.z_test - np.mean(self.z_test))**2))
+            
             """
             mean_z =  1.0/t*sum(mean_z_vector)
             bias =    1.0/t*sum((self.z_test - mean_z)**2)
@@ -78,9 +89,10 @@ class Bootstrap:
             print ('                      ') 
             print ('Bias = %s' % bias)
             print ('Variance = %s' % variance) 
-            print ('Error = %s' % error) 
+            #print ('Error = %s' % error) 
             print ('MSE = %s' % MSE) 
-            #print ('doubleR = %s' % doubleR) 
+            print ('Bias + Variance = %s' % (bias + variance)) 
+            print ('R2 = %s' % doubleR) 
 
         # Ridge regression
         elif self.method == 'Ridge':
@@ -117,7 +129,7 @@ class Bootstrap:
         #diff = np.mean(self.z) - np.mean(m)
         #MSE = 1.0/(n*n)*(diff*diff)
         
-        return m
+        return m, self.z_test
 
 
 
