@@ -90,6 +90,7 @@ __pycache__/
 *.log 
 *.bbl 
 *.blg 
+*.toc
 
 #data files
 ######################
