@@ -1,5 +1,6 @@
-#from sklearn.linear_model import Ridge, Lasso
+from sklearn.linear_model import Ridge, Lasso
 import numpy as np
+import scipy.linalg as scl
 
 class My_Linear_Regression:
 	def __init__(self, X_training, X_test, z, lambda_):
@@ -9,14 +10,6 @@ class My_Linear_Regression:
 		self.lambda_ = lambda_	
 
 		"""
-
-		If the data is split into training and test data 
-		then this regression class will fit the model to 
-		the training data and test the model on the test 
-		data.
-		If it is not plit, then X_test is sent in to the 
-		class as the X_training.
-
 		###### Variables #######
 
 		X_training = training data used to fit the model
@@ -32,14 +25,19 @@ class My_Linear_Regression:
 
 		######  Method   #######
 	
-		Solves the OLS 
-		beta = (X^TX)^-1X^Ty
+		Solves the OLS with SVD and Moore Penrose psudoinverse
+		omega = X^Ty/(X^TX)
 	
 		"""
 
 		# Calculate the Ordinary Least Square             
-		self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
-
+		#self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
+				
+		U, D, VT = np.linalg.svd(self.X_training)
+		sigma = np.zeros((U.shape[0], VT.shape[1]))
+		np.fill_diagonal(sigma, D)
+		self.omega = VT.T.dot(np.linalg.pinv(sigma)).dot(U.T).dot(self.z)
+	
 	def My_Ridge(self):
 
 		"""
@@ -47,22 +45,14 @@ class My_Linear_Regression:
 
 		######  Method   #######
 	
-		Solves the ridge regression
-		beta = (X^TX + lambdaI)^-1X^Ty
+		Solves the ridge regression with SVD and Moore Penrose psudoinverse
+		omega = X^Ty/(X^TX + lambda)
 		"""
-		n = np.size(self.X_training,0)   # size of column (number of rows)
-		m = np.size(self.X_training,1)   # number of columns
-		# Separate the first column in X and first value in z
-		X_ridge = self.X_training[:,1:]
-
-		# Calculate mean of z_training equals beta_0
-		beta_0 = 1.0/(n)*sum(self.z)
-		I = np.identity(m-1)
-		I_lambda = I*self.lambda_ 
 		
 		# Calculate the Ridge regression
-		self.beta = np.linalg.inv(X_ridge.T.dot(X_ridge) + I_lambda).dot(X_ridge.T).dot(self.z)
-		self.beta = np.insert(self.beta, 0, beta_0)
+
+		m = self.X_training.shape[1]
+		self.omega = self.X_training.T.dot(self.z).dot(np.linalg.inv(self.X_training.T.dot(self.X_training) + np.eye(m)*self.lambda_))
 
 	def My_Lasso(self):
 
@@ -73,12 +63,13 @@ class My_Linear_Regression:
 		"""
 		
 		lasso = Lasso(self.lambda_)
-		self.beta = lasso.fit(self.X_training, self.z)
+		self.fit = lasso.fit(self.X_training, self.z)
+		self.omega = lasso.coef_
 
 	def My_Predict(self, X_test, l):
 
 		if l == True:
-			z_predict = self.beta.predict(X_test)
+			z_predict = self.fit.predict(X_test)
 	
 		else:
 			z_predict = X_test.dot(self.beta)
@@ -87,7 +78,7 @@ class My_Linear_Regression:
 
 	def My_Beta(self):
 
-		return self.beta
+		return self.omega
 
 		
 
