@@ -31,12 +31,11 @@ class My_Linear_Regression:
 		"""
 
 		# Calculate the Ordinary Least Square             
-		#self.beta = np.linalg.inv(self.X_training.T.dot(self.X_training)).dot(self.X_training.T).dot(self.z)
 				
 		U, D, VT = np.linalg.svd(self.X_training)
 		sigma = np.zeros((U.shape[0], VT.shape[1]))
 		np.fill_diagonal(sigma, D)
-		self.omega = VT.T.dot(np.linalg.pinv(sigma)).dot(U.T).dot(self.z)
+		self.beta = VT.T.dot(np.linalg.pinv(sigma)).dot(U.T).dot(self.z)
 	
 	def My_Ridge(self):
 
@@ -52,7 +51,7 @@ class My_Linear_Regression:
 		# Calculate the Ridge regression
 
 		m = self.X_training.shape[1]
-		self.omega = self.X_training.T.dot(self.z).dot(np.linalg.inv(self.X_training.T.dot(self.X_training) + np.eye(m)*self.lambda_))
+		self.beta = self.X_training.T.dot(self.z).dot(np.linalg.inv(self.X_training.T.dot(self.X_training) + np.eye(m)*self.lambda_))
 
 	def My_Lasso(self):
 
@@ -64,7 +63,7 @@ class My_Linear_Regression:
 		
 		lasso = Lasso(self.lambda_)
 		self.fit = lasso.fit(self.X_training, self.z)
-		self.omega = lasso.coef_
+		self.beta = lasso.coef_
 
 	def My_Predict(self, X_test, l):
 
@@ -78,7 +77,7 @@ class My_Linear_Regression:
 
 	def My_Beta(self):
 
-		return self.omega
+		return self.beta
 
 		
 

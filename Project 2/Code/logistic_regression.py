@@ -3,11 +3,10 @@ import scipy.linalg as scl
 from math import exp, log
 
 class Logistic_Regression:
-	def __init__(self, X_training, X_test, z, beta, lambda_):
+	def __init__(self, X_training, X_test, z, lambda_):
 		self.X_training = X_training
 		self.X_test = X_test
 		self.z = z
-		self.beta = beta
 		self.lambda_ = lambda_	
 
 		"""
@@ -37,7 +36,7 @@ class Logistic_Regression:
 		sigm = 1.0/(1 + exp(-X.T.dot(b)))		
 		return sigm
 
-	def deri_cross_entropy(self):
+	def deri_cross_entropy(self, beta):
 		
 		"""
 		Calculates the derivative of the cross entropy.
@@ -45,15 +44,19 @@ class Logistic_Regression:
 		To be used in the gradient descent method in order
 		to minimize the cost function, i.e. finding the 
 		local minima. 
+
+		Returns a n x m matrix, where m = (L**2), containing
+		the derivatives of each spin-element (in the rows) for all 
+		configurations (in the columns).
 		"""
 	
 		n = np.size(self.X_training,1) # size of row (number of columns) 
-		dC = np.zeros(n)
+		dC = np.zeros((n, n))
 		for i in range(n):
-			f_i = self.sigmoid(self.X_training[i])
+			f_i = self.sigmoid(self.X_training[i], beta)
 			y_i = self.z[i]
 			x_i = self.X_training[i]
-			dC[i] += (f_i - y_i).dot(x_i)
+			dC[i,:] += (f_i - y_i).dot(x_i)
 		return dC
 
 
