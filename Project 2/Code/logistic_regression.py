@@ -1,11 +1,13 @@
 import numpy as np
 import scipy.linalg as scl
+from math import exp, log
 
 class Logistic_Regression:
-	def __init__(self, X_training, X_test, z, lambda_):
+	def __init__(self, X_training, X_test, z, beta, lambda_):
 		self.X_training = X_training
 		self.X_test = X_test
 		self.z = z
+		self.beta = beta
 		self.lambda_ = lambda_	
 
 		"""
@@ -14,22 +16,26 @@ class Logistic_Regression:
 		X_training = training data used to fit the model
 		X_test = data to test the model on
 		z = the response
+		beta = the weights of the regression
 		lambda = the penalty
 		"""
 
-	def sigmoid(self):
+	def sigmoid(self, X, b):
 
 		"""
 		Returns the sigmoid function f(s) = 1/(1 + e^(-s))
-
-		In the case of the Ising model this corresponds to 
-		the probability of a data point being in a certain 	
-		category. 
+ 
+		It represents the probability of a data point being 
+		in a certain category. In the case of the Ising model 
+		this corresponds to the configuration being in one 
+		certain state, ordered or disordered.
 		
 		Note: 1 - f(s) = f(-s) 
+		      s = X.T.dot(b)
 		"""
 
-		return 0
+		sigm = 1.0/(1 + exp(-X.T.dot(b)))		
+		return sigm
 
 	def cross_entropy(self):
 
@@ -37,8 +43,14 @@ class Logistic_Regression:
 		Calculates the cost function for the logistic 
 		regression case, i.e. the cross entropy. 
 		"""
-
-		return 0
+		
+		n = np.size(self.X_training,1) # size of row (number of columns) 
+		C = np.zeros(n)
+		for i in range(n):
+			f_i = self.sigmoid(self.X_training[i])
+			y_i = self.z[i]
+			C[i] -= y_i*log(f_i) + (1 - y_i)*log(1 + f_i)
+		return C
 
 	def deri_cross_entropy(self):
 		
@@ -49,5 +61,15 @@ class Logistic_Regression:
 		to minimize the cost function, i.e. finding the 
 		local minima. 
 		"""
+	
+		n = np.size(self.X_training,1) # size of row (number of columns) 
+		dC = np.zeros(n)
+		for i in range(n):
+			f_i = self.sigmoid(self.X_training[i])
+			y_i = self.z[i]
+			x_i = self.X_training[i]
+			dC[i] += (f_i - y_i).dot(x_i)
+		return dC
 
-		return 0
+
+
