@@ -37,21 +37,6 @@ class Logistic_Regression:
 		sigm = 1.0/(1 + exp(-X.T.dot(b)))		
 		return sigm
 
-	def cross_entropy(self):
-
-		"""
-		Calculates the cost function for the logistic 
-		regression case, i.e. the cross entropy. 
-		"""
-		
-		n = np.size(self.X_training,1) # size of row (number of columns) 
-		C = np.zeros(n)
-		for i in range(n):
-			f_i = self.sigmoid(self.X_training[i])
-			y_i = self.z[i]
-			C[i] -= y_i*log(f_i) + (1 - y_i)*log(1 + f_i)
-		return C
-
 	def deri_cross_entropy(self):
 		
 		"""
