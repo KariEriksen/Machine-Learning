@@ -1,17 +1,34 @@
 import numpy as np
+import pickle
+import os
+import glob
 import scipy.sparse as sp
 np.random.seed(12)
-from logistic_regression import Logistic_Regression
 from sklearn import linear_model
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-"""
-import pickle
-def read_t(t,root="./"):
-    data = pickle.load(open(root+'Ising2DFM_reSample_L40_T=%.2f.pkl'%t,'rb'))
-    return np.unpackbits(data).astype(int).reshape(-1,1600)
-"""
+# path to data directory
+cwd = os.getcwd()
+path_to_data=cwd + '/IsingData/'
+
+print (pickle.HIGHEST_PROTOCOL)
+# load data
+file_name = "Ising2DFM_reSample_L40_T=All.pkl" # this file contains 16*10000 samples taken in T=np.arange(0.25,4.0001,0.25)
+
+data = pickle.load(open(path_to_data+file_name,'rb')) # pickle reads the file and returns the Python object (1D array, compressed bits)
+data = np.unpackbits(data).reshape(-1, 1600) # Decompress array and reshape for convenience
+data=data.astype('int')
+data[np.where(data==0)]=-1 # map 0 state to -1 (Ising variable can take values +/-1)
+
+file_name = "Ising2DFM_reSample_L40_T=All_labels.pkl" # this file contains 16*10000 samples taken in T=np.arange(0.25,4.0001,0.25)
+labels = pickle.load(open(path_to_data+file_name,'rb')) # pickle reads the file and returns the Python object (here just a 1D array with the binary labels)
+
+data[data == 0] = -1
+
+ordered = slice(0, 70000)
+critical = slice(70000, 100000)
+disordered = slice(100000, 160000)
 
 # define Ising model aprams
 # system size

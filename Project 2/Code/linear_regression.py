@@ -1,6 +1,6 @@
-from sklearn.linear_model import Ridge, Lasso
 import numpy as np
 import scipy.linalg as scl
+from sklearn.linear_model import Lasso
 
 class My_Linear_Regression:
 	def __init__(self, X_training, X_test, z, lambda_):

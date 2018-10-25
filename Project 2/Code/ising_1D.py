@@ -1,26 +1,16 @@
 import numpy as np
-import scipy.sparse as sp
+#import scipy.sparse as sp
 np.random.seed(12)
 from linear_regression import My_Linear_Regression
+from sklearn.linear_model import Lasso
 from bootstrap import Bootstrap
-from sklearn import linear_model
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-"""
-import pickle
-def read_t(t,root="./"):
-    data = pickle.load(open(root+'Ising2DFM_reSample_L40_T=%.2f.pkl'%t,'rb'))
-    return np.unpackbits(data).astype(int).reshape(-1,1600)
-"""
-
-leastsq = linear_model.LinearRegression()
-ridge = linear_model.Ridge()
-
-
-import warnings
-#Comment this to turn on warnings
-warnings.filterwarnings('ignore')
+# decide which method to use
+#method = 1 # OLS
+#method = 2 #Ridge
+#method = 3 #Lasso
+method = 4 #Bootstrap
 
 # define Ising model aprams
 # system size
@@ -43,6 +33,7 @@ def ising_energies(states,L):
     E = np.einsum('...i,ij,...j->...',states,J,states)
 
     return E
+
 # calculate Ising energies
 energies=ising_energies(states,L)
 
@@ -50,46 +41,147 @@ energies=ising_energies(states,L)
 states=np.einsum('...i,...j->...ij', states, states)
 shape=states.shape
 states=states.reshape((shape[0],shape[1]*shape[2]))
-# build final data set
 
+# build final data set
 Data=[states,energies]
 coefs_leastsq = []
 coefs_ridge = []
+coefs_lasso = []
 
 # define number of samples
 n_samples=400
+
 # define train and test data sets
 X_train=Data[0][:n_samples]
-Y_train=Data[1][:n_samples] #+ np.random.normal(0,4.0,size=X_train.shape[0])
+Y_train=Data[1][:n_samples]              #+ np.random.normal(0,4.0,size=X_train.shape[0])
 X_test=Data[0][n_samples:3*n_samples//2]
 Y_test=Data[1][n_samples:3*n_samples//2] #+ np.random.normal(0,4.0,size=X_test.shape[0])
-#print ('X_train = %s, X_test = %s, Y_train = %s, Y_test = %s' % (X_train.shape, X_test.shape, Y_train.shape, Y_test.shape))
 
-lr = My_Linear_Regression(X_train, X_test, Y_train, lambda_)
-lr.My_Lasso()
-energies_predict = lr.My_Predict(X_test, True)
-coeff = lr.My_Beta()
-J_leastsq=np.array(coeff).reshape((L,L))
-"""
-### scikit-learn ordinary least squares
-leastsq.fit(X_train, Y_train) # fit model 
-coefs_leastsq.append(leastsq.coef_) # store weights
-J_leastsq=np.array(coefs_leastsq).reshape((L,L))
 
-### scikit-learn ridge regression
-ridge.set_params(alpha=lambda_) # set regularisation parameter
-ridge.fit(X_train, Y_train) # fit model 
-coefs_ridge.append(ridge.coef_) # store weights
-J_leastsq=np.array(coefs_ridge).reshape((L,L))
-"""
-cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
-#fig, axarr = plt.subplots(nrows=1, ncols=3)
-plt.imshow(J_leastsq,**cmap_args)
-plt.title('Ridge regression using own code')
-#axarr[0].set_title('$\\mathrm{OLS}$',fontsize=16)
-#axarr[0].tick_params(labelsize=16)
+if method == 1:
+	lr = My_Linear_Regression(X_train, X_test, Y_train, lambda_)
+	lr.My_OLS()
+	energies_predict = lr.My_Predict(X_test, False)
+	coeff = lr.My_Beta()
+	J_new=np.array(coeff).reshape((L,L))
+	# plot 
+	fig = plt.figure()
+	cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
+	plt.imshow(J_new,**cmap_args)
+	plt.title('$\\mathrm{OLS}$', fontsize=12)
+	plt.show()
 
-plt.show()
+elif method == 2:
+	lambda_ = np.array([0.001, 0.01, 0.1, 1.0])
+	coeff = np.zeros((4, np.size(X_test,1)))
+	for i in range(4):
+		lmbd = lambda_[i]
+		lr = My_Linear_Regression(X_train, X_test, Y_train, lmbd)
+		lr.My_Ridge()
+		energies_predict = lr.My_Predict(X_test, False)	
+		coeff[i,:] = lr.My_Beta()
+	J_001 = np.array(coeff[0,:]).reshape((L,L))
+	J_01 = np.array(coeff[1,:]).reshape((L,L))
+	J_1 = np.array(coeff[2,:]).reshape((L,L))
+	J_10 = np.array(coeff[3,:]).reshape((L,L))
+
+	# plot
+	cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
+	plt.subplot(221)
+	plt.imshow(J_001,**cmap_args)
+	plt.title('$\\mathrm{Ridge},\ \\lambda=%.4f$' %(lambda_[0]),fontsize=12)
+	plt.tick_params(labelsize=10)
+	
+	plt.subplot(222)
+	plt.imshow(J_01,**cmap_args)
+	plt.title('$\\mathrm{Ridge},\ \\lambda=%.4f$' %(lambda_[1]),fontsize=12)
+	plt.tick_params(labelsize=10)
+	plt.colorbar()
+
+	plt.subplot(223)
+	plt.imshow(J_1,**cmap_args)
+	plt.title('$\\mathrm{Ridge},\ \\lambda=%.4f$' %(lambda_[2]),fontsize=12)
+	plt.tick_params(labelsize=10)
+
+	plt.subplot(224)
+	plt.imshow(J_10,**cmap_args)
+	plt.title('$\\mathrm{Ridge},\ \\lambda=%.4f$' %(lambda_[3]),fontsize=12)
+	plt.tick_params(labelsize=10)
+
+	plt.subplots_adjust(wspace=0.05, hspace=0.5)
+	plt.colorbar()
+	plt.show()
+
+elif method == 3:
+	lambda_ = np.array([0.001, 0.01, 0.1, 1.0])
+	coeff = np.zeros((4, np.size(X_test,1)))
+	for i in range(4):
+		lmbd = lambda_[i]
+		lr = My_Linear_Regression(X_train, X_test, Y_train, lmbd)
+		lr.My_Lasso()
+		energies_predict = lr.My_Predict(X_test, True)
+		coeff[i,:] = lr.My_Beta()
+	J_001 = np.array(coeff[0,:]).reshape((L,L))
+	J_01 = np.array(coeff[1,:]).reshape((L,L))
+	J_1 = np.array(coeff[2,:]).reshape((L,L))
+	J_10 = np.array(coeff[3,:]).reshape((L,L))
+
+	# plot
+	cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
+	plt.subplot(221)
+	plt.imshow(J_001,**cmap_args)
+	plt.title('$\\mathrm{Lasso},\ \\lambda=%.4f$' %(lambda_[0]),fontsize=12)
+	plt.tick_params(labelsize=10)
+	
+	plt.subplot(222)
+	plt.imshow(J_01,**cmap_args)
+	plt.title('$\\mathrm{Lasso},\ \\lambda=%.4f$' %(lambda_[1]),fontsize=12)
+	plt.tick_params(labelsize=10)
+	plt.colorbar()
+
+	plt.subplot(223)
+	plt.imshow(J_1,**cmap_args)
+	plt.title('$\\mathrm{Lasso},\ \\lambda=%.4f$' %(lambda_[2]),fontsize=12)
+	plt.tick_params(labelsize=10)
+
+	plt.subplot(224)
+	plt.imshow(J_10,**cmap_args)
+	plt.title('$\\mathrm{Lasso},\ \\lambda=%.4f$' %(lambda_[3]),fontsize=12)
+	plt.tick_params(labelsize=10)
+
+	plt.subplots_adjust(wspace=0.05, hspace=0.5)
+	plt.colorbar()
+	plt.show()
+
+elif method == 4:
+	method = 'Lasso' # select the optimal method
+	MSE = np.zeros(10)
+	bias = np.zeros(10)
+	variance = np.zeros(10)
+	lambda_ = np.array([0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0])
+	for i in range(10):
+		# do bootstrap 
+		boot = Bootstrap(X_train, X_test, Y_train, 100, lambda_[i], method)
+		m, coeff = boot.My_Bootstrap()
+
+		# Calculate different statistical properties
+		MSE[i] = np.mean(np.mean((-1 - coeff)**2, axis=1, keepdims=True) )
+		bias[i] = np.mean((-1 - np.mean(coeff, axis=1, keepdims=True))**2 )
+		variance[i] = np.mean(np.var(coeff, axis=1, keepdims=True) )
+
+	# plot
+	plt.plot(lambda_, MSE, 'r--', lambda_, bias, 'b--', lambda_, variance, 'g--')
+	plt.legend(('MSE', 'bias^2', 'variance'), loc='upper right')
+	plt.title('Bias-variance tradeoff')
+	#plt.axis([1, 10, 0, 1.5])
+	plt.xlabel('$\\lambda$')
+	plt.ylabel('Error')
+	plt.show()
+	
+else:
+	print('Method must be given, ex. 1, corresponds to OLS')
+
+
 
 
 
