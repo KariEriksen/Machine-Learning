@@ -155,29 +155,51 @@ elif method == 3:
 
 elif method == 4:
 	method = 'Lasso' # select the optimal method
-	MSE = np.zeros(10)
-	bias = np.zeros(10)
-	variance = np.zeros(10)
-	lambda_ = np.array([0.0001, 0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0])
-	for i in range(10):
+	#MSE = np.zeros(10)
+	#bias = np.zeros(10)
+	#variance = np.zeros(10)
+	#MSE_test = np.zeros(10)
+	#bias_test = np.zeros(10)
+	#variance_test = np.zeros(10)
+	doubleR = np.zeros(9)
+	lambda_ = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0])
+	for i in range(9):
 		# do bootstrap 
 		boot = Bootstrap(X_train, X_test, Y_train, 100, lambda_[i], method)
-		m, coeff = boot.My_Bootstrap()
+		Y_pred, coeff = boot.My_Bootstrap()
 
 		# Calculate different statistical properties
+		#MSE[i] = np.mean(np.mean((Y_test - Y_pred)**2, axis=1, keepdims=True) )
+		#bias[i] = np.mean((Y_test - np.mean(Y_pred, axis=1, keepdims=True))**2 )
+		#variance[i] = np.mean(np.var(Y_pred, axis=1, keepdims=True) )
+
+		#MSE[i]_test = np.mean(np.mean((Y_test - Y_pred)**2, axis=1, keepdims=True) )
+		#bias[i]_test = np.mean((Y_test - np.mean(Y_pred, axis=1, keepdims=True))**2 )
+		#variance[i]_test = np.mean(np.var(Y_pred, axis=1, keepdims=True) )
+		Y_mat = np.tile(Y_test, (100, 1))
+		#doubleR[i] = 1.0 - sum((sum((Y_mat - Y_pred)**2))/sum(sum((Y_mat - np.mean(Y_mat, axis=1, keepdims=True))**2)))
+		doubleR[i] = 1.0 - ((Y_mat - Y_pred)**2).sum()/((Y_mat - Y_mat.mean())**2).sum()
+		"""
 		MSE[i] = np.mean(np.mean((-1 - coeff)**2, axis=1, keepdims=True) )
 		bias[i] = np.mean((-1 - np.mean(coeff, axis=1, keepdims=True))**2 )
 		variance[i] = np.mean(np.var(coeff, axis=1, keepdims=True) )
-
+		"""
+	print ('lasso my score = %s' % doubleR)
 	# plot
+	"""
 	plt.plot(lambda_, MSE, 'r--', lambda_, bias, 'b--', lambda_, variance, 'g--')
 	plt.legend(('MSE', 'bias^2', 'variance'), loc='upper right')
 	plt.title('Bias-variance tradeoff')
-	#plt.axis([1, 10, 0, 1.5])
 	plt.xlabel('$\\lambda$')
 	plt.ylabel('Error')
 	plt.show()
-	
+	"""
+	plt.plot(lambda_, doubleR, 'r--',)
+	plt.title('$R^2 score$')
+	plt.xlabel('$\\lambda$')
+	plt.ylabel('Error')
+	#plt.show()
+
 else:
 	print('Method must be given, ex. 1, corresponds to OLS')
 
