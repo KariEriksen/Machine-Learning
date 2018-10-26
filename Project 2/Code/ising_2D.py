@@ -73,7 +73,7 @@ if method == 1:
 	plt.title('Disordered',fontsize=12)	
 	plt.tick_params(labelsize=10)
 
-	plt.subplots_adjust(wspace=0.05, hspace=0.5)
+	#plt.subplots_adjust(wspace=0.05, hspace=0.5)
 	plt.show()
 
 if method == 2:
@@ -81,17 +81,20 @@ if method == 2:
 	eps = 1e-5
 	e = 1.0
 	n = 100
-	eta = 0.1
+	eta = 0.5
 	log_r = Logistic_Regression(X_train, X_test, Y_train, lambda_)
 	for i in range(n):
 		if e > eps:
 			# Calculate the derivative of the cost function	
 			gradient = log_r.deri_cross_entropy(beta)
-			v_t = eta*gradient[i,:]
+			v_t = eta*gradient
+			#print (gradient)
 			beta = beta - v_t
-			e = np.mean(gradient)
+			e = abs(np.mean(gradient))
+			#print (e)
+	
 	print (beta)
-
+	
 
 
 

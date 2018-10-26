@@ -32,12 +32,12 @@ class Logistic_Regression:
 		Note: 1 - f(s) = f(-s) 
 		      s = X.T.dot(b)
 		"""
-
-		sigm = 1.0/(1 + exp(-X.T.dot(b)))		
+		t = -X.T.dot(b)
+		sigm = 1.0/(1.0 + np.exp(t))
 		return sigm
 
 	def deri_cross_entropy(self, beta):
-		
+	 	
 		"""
 		Calculates the derivative of the cross entropy.
 		
@@ -50,15 +50,13 @@ class Logistic_Regression:
 		configurations (in the columns).
 		"""
 	
-		n = np.size(self.X_training,1) # size of row (number of columns) 
-		dC = np.zeros((n, n))
+		n = np.size(self.X_training,0) # number of samples
+		dC = np.zeros(np.size(self.X_training,1))
 		for i in range(n):
-			#print ('X = %s, beta = %s' % (self.X_training[i].shape, beta.shape))
-			f_i = self.sigmoid(self.X_training[i,:], beta)
+			x_i = self.X_training[i,:]
 			y_i = self.z[i]
-			x_i = self.X_training[i]
-			#print ('f_i = %s, y_i = %s, x_i = %s' % (f_i, y_i, x_i))
-			dC[i,:] += (f_i - y_i)*(x_i)
+			f_i = self.sigmoid(x_i, beta)
+			dC += (f_i - y_i)*(x_i) 
 		return dC
 
 
