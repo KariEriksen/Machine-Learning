@@ -2,17 +2,22 @@ import numpy as np
 import pickle
 import os
 import glob
-import scipy.sparse as sp
-np.random.seed(12)
-from sklearn import linear_model
+import random
+from logistic_regression import Logistic_Regression
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+# define Ising model aprams
+# system size
+L=40
+lambda_ = 0.001
+#method = 1 # plot phase of training data
+method = 2 # logistic regression with gradient descent
 
 # path to data directory
 cwd = os.getcwd()
 path_to_data=cwd + '/IsingData/'
 
-print (pickle.HIGHEST_PROTOCOL)
 # load data
 file_name = "Ising2DFM_reSample_L40_T=All.pkl" # this file contains 16*10000 samples taken in T=np.arange(0.25,4.0001,0.25)
 
@@ -24,70 +29,68 @@ data[np.where(data==0)]=-1 # map 0 state to -1 (Ising variable can take values +
 file_name = "Ising2DFM_reSample_L40_T=All_labels.pkl" # this file contains 16*10000 samples taken in T=np.arange(0.25,4.0001,0.25)
 labels = pickle.load(open(path_to_data+file_name,'rb')) # pickle reads the file and returns the Python object (here just a 1D array with the binary labels)
 
-data[data == 0] = -1
+# divide data into ordered, critical and disordered
+X_ordered=data[:70000,:]
+Y_ordered=labels[:70000]
 
-ordered = slice(0, 70000)
-critical = slice(70000, 100000)
-disordered = slice(100000, 160000)
+X_critical=data[70000:100000,:]
+Y_critical=labels[70000:100000]
 
-# define Ising model aprams
-# system size
-L=40
-lambda_ = 0.001
+X_disordered=data[100000:,:]
+Y_disordered=labels[100000:]
 
-# create 10000 random Ising states
-states=np.random.choice([-1, 1], size=(10000,L))
+# define training and test data sets
+X=np.concatenate((X_ordered,X_disordered))
+Y=np.concatenate((Y_ordered,Y_disordered))
 
-def ising_energies(states,L):
-    """
-    This function calculates the energies of the states in the nn Ising Hamiltonian
-    """
-    J=np.zeros((L,L),)
-    for i in range(L):
-	# only nearest neightbors have interaction
-        J[i,(i+1)%L]-=1.0
+rand = np.arange(len(Y))
+np.random.shuffle(rand)
+
+X = X[rand]
+Y = Y[rand]
+
+X_train = X[:9000,:]
+Y_train = Y[:9000]
+X_test = X[9000:,:]
+Y_test = Y[9000:]
+beta = np.random.normal(0, 1, np.size(X_train,1))
+
+if method == 1:
+	# plot
+	cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
+	plt.subplot(311)
+	plt.imshow(X_ordered[20000].reshape(L,L),**cmap_args)
+	plt.title('Ordered',fontsize=12)
+	plt.tick_params(labelsize=10)
 	
-    # compute energies, Einstein summation
-    E = np.einsum('...i,ij,...j->...',states,J,states)
+	plt.subplot(312)
+	plt.imshow(X_critical[10000].reshape(L,L),**cmap_args)
+	plt.title('Critical',fontsize=12)
+	plt.tick_params(labelsize=10)
 
-    return E
+	plt.subplot(313)
+	plt.imshow(X_disordered[50000].reshape(L,L),**cmap_args)
+	plt.title('Disordered',fontsize=12)	
+	plt.tick_params(labelsize=10)
 
-energies=ising_energies(states,L)
+	plt.subplots_adjust(wspace=0.05, hspace=0.5)
+	plt.show()
 
-# reshape Ising states into RL samples: S_iS_j --> X_p
-states=np.einsum('...i,...j->...ij', states, states)
-shape=states.shape
-states=states.reshape((shape[0],shape[1]*shape[2]))
-# build final data set
-
-Data=[states,energies]
-coefs_leastsq = []
-coefs_ridge = []
-
-# define number of samples
-n_samples=400
-# define train and test data sets
-X_train=Data[0][:n_samples]
-Y_train=Data[1][:n_samples] #+ np.random.normal(0,4.0,size=X_train.shape[0])
-X_test=Data[0][n_samples:3*n_samples//2]
-Y_test=Data[1][n_samples:3*n_samples//2] #+ np.random.normal(0,4.0,size=X_test.shape[0])
-beta = np.zeros(n_samples)
-
-
-# Gradient descent 
-eps = 1e-5
-n = 100
-eta = 0.1
-log_r = Logistic_Regression(X_train, X_test, Y_train, lambda_)
-for i in range(n):
-	if e > eps:
-		# Calculate the derivative of the cost function
-		gradient = log_r.deri_cross_entropy(beta)
-		v_t = eta*gradient[i,:]
-		beta = beta - v_t
-		e = abs(gradient)
-plt.show()
-
+if method == 2:
+	# Gradient descent 
+	eps = 1e-5
+	e = 1.0
+	n = 100
+	eta = 0.1
+	log_r = Logistic_Regression(X_train, X_test, Y_train, lambda_)
+	for i in range(n):
+		if e > eps:
+			# Calculate the derivative of the cost function	
+			gradient = log_r.deri_cross_entropy(beta)
+			v_t = eta*gradient[i,:]
+			beta = beta - v_t
+			e = np.mean(gradient)
+	print (beta)
 
 
 

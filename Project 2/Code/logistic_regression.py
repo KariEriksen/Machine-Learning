@@ -53,10 +53,12 @@ class Logistic_Regression:
 		n = np.size(self.X_training,1) # size of row (number of columns) 
 		dC = np.zeros((n, n))
 		for i in range(n):
-			f_i = self.sigmoid(self.X_training[i], beta)
+			#print ('X = %s, beta = %s' % (self.X_training[i].shape, beta.shape))
+			f_i = self.sigmoid(self.X_training[i,:], beta)
 			y_i = self.z[i]
 			x_i = self.X_training[i]
-			dC[i,:] += (f_i - y_i).dot(x_i)
+			#print ('f_i = %s, y_i = %s, x_i = %s' % (f_i, y_i, x_i))
+			dC[i,:] += (f_i - y_i)*(x_i)
 		return dC
 
 
