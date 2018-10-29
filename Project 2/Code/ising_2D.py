@@ -13,6 +13,7 @@ L=40
 lambda_ = 0.001
 #method = 1 # plot phase of training data
 method = 2 # logistic regression with gradient descent
+#method = 3 # logistic regression with stochastic gradient descent
 
 # path to data directory
 cwd = os.getcwd()
@@ -80,8 +81,8 @@ if method == 2:
 	# Gradient descent 
 	eps = 1e-5
 	e = 1.0
-	n = 100
 	eta = 0.5
+	n = 100
 	log_r = Logistic_Regression(X_train, X_test, Y_train, lambda_)
 	for i in range(n):
 		if e > eps:
@@ -92,8 +93,33 @@ if method == 2:
 			beta = beta - v_t
 			e = abs(np.mean(gradient))
 			#print (e)
+	indicator = 0.0
+	for j in range(n):
+		Y_pred = beta[j]*X_test[j]	
+		if Y_pred == Y_train[j]:
+			indicator += 1.0
+	accuracy = indicator/n
+	#print (beta)
 	
-	print (beta)
+if method == 3:
+	# Stochastic gradient descent 
+	eps = 1e-5
+	e = 1.0
+	eta = 0.5
+	epochs = 100
+	M = 200
+	m = int(n/M)
+	for epoch in range(epochs):
+		for i in range(m):
+			if e > eps:
+				k = np.random.randint(m)
+				log_r = Logistic_Regression(X_train[k:k+1,:], X_test[k:k+1,:], Y_train[k:k+1,:], lambda_)
+				# Calculate the derivative of the cost function	
+				gradient = log_r.deri_cross_entropy(beta)
+				v_t = eta*gradient
+				beta = beta - v_t
+				e = abs(np.mean(gradient))
+	
 	
 
 
