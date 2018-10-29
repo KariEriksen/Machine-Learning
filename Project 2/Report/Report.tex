@@ -38,16 +38,165 @@
 
 \subsection{Ising model}
 
+\begin{equation}
+E = -J \sum_{<kl>}^N s_k s_l - B \sum_k^N s_k
+\end{equation}
+
+and B is the external magnetic field which in our case is zero. And our Ising model becomes the eq. \ref{eq:Ising}.
+
+\begin{equation} \label{eq:Ising}
+E = -J \sum_{<kl>}^N s_k s_l
+\end{equation}
+
+\begin{equation}
+E[\hat{s}] = -J \sum_{j=1}^N s_j s_{j+1}
+\end{equation}
+
+\begin{equation}
+E_{model}[s^i] = -\sum_{j=1}^N \sum_{k=1}^N J_{j,k} s_j^i s_k^i
+\end{equation}
+
+\begin{equation}
+E_{model}^i \equiv \mathbf{X}^i \cdot \mathbf{J}
+\end{equation}
+
+where $\mathbf{X}^i$ represents ....
+
 \section{Methods}
+
+\subsection{Linear Regression}
+
+\subsubsection{Ordinary Least Square}
+
+\subsubsection{Ridge Regression}
+
+\subsubsection{Lasso Regression}
+
+\subsection{Singular value decomposition}
+
+\begin{equation} \label{eq:SVD}
+\mathbf{X} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^\top
+\end{equation}
+
+\begin{equation}
+\mathbf{X}^+ = \mathbf{V} \mathbf{\Sigma}^+ \mathbf{U}^\top \mathbf{y}
+\end{equation}
 
 \subsection{Logistic regression}
 
+\begin{equation}
+\mathbf{x}_i^{\top} \mathbf{w} + b_0 \equiv \mathbf{x}_i^{\top} \mathbf{w} 
+\end{equation}
+
+\begin{equation}
+f(\mathbf{x}_i^{\top} \mathbf{w}) = \frac{1}{1 + e^{-\mathbf{x}_i^{\top} \mathbf{w}}}
+\end{equation}
+
+$y_i = \{0,1\}$
+
+\begin{equation}
+C(\beta) = \sum_{i=1}^N -y_i \log (f(X_i^\top \beta) - (1 - y_i) \log [1 - f(X_i^\top \beta)])
+\end{equation}
+
+\begin{equation}
+P(y_i = 1|\mathbf{x}_i,\mathbf{\theta}) = \frac{1}{1 + e^{-\mathbf{x}_i^{\top} \mathbf{w}}}
+\end{equation}
+
 \subsection{Neural Network}
 
+\begin{align}
+\Delta_j^l &= \frac{\partial E}{\partial z_j^l} = \frac{\partial E}{\partial a_j^l} \sigma'(z_j^l) \\
+\Delta_j^l &= \frac{\partial E}{\partial z_j^l} = \frac{\partial E}{\partial b_j^l} \frac{\partial b_j^l}{\partial z_j^l} = \frac{\partial E}{\partial b_j^l} \\
+\Delta_j^l &= \frac{\partial E}{\partial z_j^l} = \sum_k \frac{\partial E}{\partial z_k^{l+1}} \frac{\partial z_j^{l+1}}{\partial z_j^l} \\
+&= \sum_k \Delta_k^{l+1} \frac{\partial z_k^{l+1}}{z_k^l} \\
+&= \left( \sum_k \Delta_k^{l+1} \beta_{kj}^{l+1} \right) \sigma'(z_j^l) \\
+\frac{\partial E}{\partial \beta_{jk}^l} &= \frac{\partial E}{\partial z_j^l} \frac{\partial z_j^l}{\partial \beta_{jk}^l} = \Delta_j^l a_k^{l+1} 
+\end{align}
+
+
+
 \subsection{Stochastic gradient descent}
+
+Gradient descent 
+
+minimizing the cost function
+
+\begin{equation}
+E(\theta) = \sum_{i=1}^N e_i(X_i, \theta) 
+\end{equation}
+
+\begin{equation}
+\mathbf{v_t} = \eta_t \nabla_{\theta} E(\theta_t)
+\end{equation}
+
+\begin{equation}
+\theta_{t+1} = \mathbf{\theta_t} - \mathbf{v_t}
+\end{equation}
+
+\begin{equation}
+\nabla_{\theta} E(\theta) = \sum_i^n \nabla_{\theta} e_i(\mathbf{x}_i, \mathbf{\theta}) \longrightarrow \sum_{i \in B_k} \nabla_{\theta} e_i(\mathbf{x}_i, \mathbf{\theta})
+\end{equation}
+
+\begin{equation}
+\nabla_{\theta} E^{MB} (\theta) = \sum_{i \in B_k}^M \nabla_{\theta} e_i(\mathbf{x}_i, \mathbf{\theta})
+\end{equation}
+
+\begin{equation}
+\mathbf{v_t} = \eta_t \nabla_{\theta} E^{MB} (\theta)
+\end{equation}
+
+\begin{equation}
+\theta_{t+1} = \mathbf{\theta_t} - \mathbf{v_t}
+\end{equation}
+
+\section{Resampling Methods}
+
+\subsection{Bootstrap}
+
+\section{Statistical Properties}
 
 \section{Results}
 
 \section{Discussion}
+
+\section{Conclusion}
+
+\newpage
+
+\begin{thebibliography}{9}
+
+\bibitem{elem}
+  Trevor Hastie,
+  \textit{The Elements of Statistical Learning},
+  Springer, New York,
+  2nd edition,
+  2009.
+
+\bibitem{IntroStat}
+  Gareth James, 
+  \textit{An Introduction to Statistical Learning},
+  Springer, New York,
+  2013.
+  
+\bibitem{morten}
+  \url{https://compphysics.github.io/MachineLearning/doc/pub/Regression/html/._Regression-bs000.html}, 08/10-18.
+  
+\bibitem{berk}
+  \url{https://ml.berkeley.edu/blog/2017/07/13/tutorial-4/}, 08/10-18.
+  
+\bibitem{high-bias}
+  \url{https://arxiv.org/pdf/1803.08823.pdf,}, 08/10-18.
+  
+\bibitem{lasso}
+  \url{https://www.jstor.org/stable/pdf/2346178.pdf}, 08/10-18.
+ 
+\bibitem{ridge}
+  \url{http://math.arizona.edu/~hzhang/math574m/Read/RidgeRegressionBiasedEstimationForNonorthogonalProblems.pdf}, 08/10-18.
+  
+\bibitem{reg}
+  \url{http://statweb.stanford.edu/~tibs/sta305files/Rudyregularization.pdf}, 08/10-18.
+  
+
+\end{thebibliography}
 
 \end{document}
