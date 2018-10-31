@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 #method = 1 # OLS
 #method = 2 #Ridge
 #method = 3 #Lasso
-method = 4 #Bootstrap
+method = 4 #Bootstrap with Lasso
 
 # define Ising model aprams
 # system size
@@ -56,7 +56,6 @@ X_train=Data[0][:n_samples]
 Y_train=Data[1][:n_samples]              #+ np.random.normal(0,4.0,size=X_train.shape[0])
 X_test=Data[0][n_samples:3*n_samples//2]
 Y_test=Data[1][n_samples:3*n_samples//2] #+ np.random.normal(0,4.0,size=X_test.shape[0])
-
 
 if method == 1:
 	lr = My_Linear_Regression(X_train, X_test, Y_train, lambda_)
@@ -115,12 +114,15 @@ elif method == 2:
 elif method == 3:
 	lambda_ = np.array([0.001, 0.01, 0.1, 1.0])
 	coeff = np.zeros((4, np.size(X_test,1)))
+	doubleR = np.zeros(4)
 	for i in range(4):
 		lmbd = lambda_[i]
 		lr = My_Linear_Regression(X_train, X_test, Y_train, lmbd)
 		lr.My_Lasso()
 		energies_predict = lr.My_Predict(X_test, True)
 		coeff[i,:] = lr.My_Beta()
+		doubleR[i] = 1.0 - ((Y_test - energies_predict)**2).sum()/((Y_test - Y_test.mean())**2).sum()
+	#print ('lasso my score = %s' % doubleR)
 	J_001 = np.array(coeff[0,:]).reshape((L,L))
 	J_01 = np.array(coeff[1,:]).reshape((L,L))
 	J_1 = np.array(coeff[2,:]).reshape((L,L))
@@ -151,7 +153,7 @@ elif method == 3:
 
 	plt.subplots_adjust(wspace=0.05, hspace=0.5)
 	plt.colorbar()
-	plt.show()
+	#plt.show()
 
 elif method == 4:
 	method = 'Lasso' # select the optimal method
@@ -184,7 +186,6 @@ elif method == 4:
 		bias[i] = np.mean((-1 - np.mean(coeff, axis=1, keepdims=True))**2 )
 		variance[i] = np.mean(np.var(coeff, axis=1, keepdims=True) )
 		"""
-	print ('lasso my score = %s' % doubleR)
 	# plot
 	"""
 	plt.plot(lambda_, MSE, 'r--', lambda_, bias, 'b--', lambda_, variance, 'g--')
@@ -198,7 +199,7 @@ elif method == 4:
 	plt.title('$R^2 score$')
 	plt.xlabel('$\\lambda$')
 	plt.ylabel('Error')
-	#plt.show()
+	plt.show()
 
 else:
 	print('Method must be given, ex. 1, corresponds to OLS')

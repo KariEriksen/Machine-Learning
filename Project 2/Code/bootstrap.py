@@ -28,12 +28,12 @@ class Bootstrap:
         Resampling method with replacement, takes data sample
         returns the predicted values of z and the test data z.
         """
-
-        t = len(self.X_test)
-	r = np.size(self.X_test,1)
+	s = len(self.X_test)        #200
+        t = len(self.X_training)    #400
+	r = np.size(self.X_test,1)  #1600
         # Ordinary Least Square method
         if self.method == 'OLS':
-            m = np.zeros((self.B,t))
+            m = np.zeros((self.B,s))
             c = np.zeros((self.B,r))
             for i in range(self.B):
                 index = randint(0, t, t)
@@ -48,7 +48,7 @@ class Bootstrap:
 
         # Ridge regression
         elif self.method == 'Ridge':
-            m = np.zeros((self.B,t))
+            m = np.zeros((self.B,s))
             c = np.zeros((self.B,r))	
             for i in range(self.B):
                 index = randint(0, t, t)
@@ -63,7 +63,7 @@ class Bootstrap:
         
         #Lasso regression
         elif self.method == 'Lasso':
-            m = np.zeros((self.B,t))
+            m = np.zeros((self.B,s))
             c = np.zeros((self.B,r))	
             for i in range(self.B):
                 index = randint(0, t, t)

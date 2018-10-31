@@ -44,7 +44,7 @@ class My_Linear_Regression:
 
 		######  Method   #######
 	
-		Solves the ridge regression with SVD and Moore Penrose psudoinverse
+		Solves the ridge regression
 		omega = X^Ty/(X^TX + lambda)
 		"""
 		
@@ -61,6 +61,8 @@ class My_Linear_Regression:
 		Calculate the Lasso regression using scikit learn
 		"""
 		
+		# Calculate the Lasso regression
+
 		lasso = Lasso(self.lambda_)
 		self.fit = lasso.fit(self.X_training, self.z)
 		self.beta = lasso.coef_
