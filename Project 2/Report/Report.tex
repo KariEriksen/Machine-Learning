@@ -79,25 +79,25 @@ E_{model}^i \equiv \mathbf{X}^i \cdot \mathbf{J}
 
 Linear regression is a method in statistics that predicts the response of one or several explanatory variables. It assumes a linear relationship between the dependent and independent variables. At its simplest form we could try to find the stright line between two points. This equation is fairly simple.
 
-\begin{equation}
+\begin{equation*}
 \hat{y} = \hat{\beta_{0}} + \hat{\beta_{1}}x + \hat{\epsilon}
-\end{equation}
+\end{equation*}
 
 Here $\hat{y}$ is a dependent variable, the outcome, $x$ is an independent variable, or the predictor, and $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ the intercept and slope respectively. $\epsilon$ is the error in our prediction. The solution for $\hat{\beta_{0}}$ and $\hat{\beta_{1}}$ in this problem is best found with least square and is also fairly easy. Calculating the mean over both variables $(\bar{x}$ and $\bar{y})$ we can find the parameters that give the prediction that differs the least from the exact solution.
 
-\begin{equation}
+\begin{equation*}
 \beta_1 = \frac{\sum^n (x_i - \bar{x})(y_i - \bar{y})}{\sum^n (x_i - \bar{x})^2}
-\end{equation}
+\end{equation*}
 
-\begin{equation}
+\begin{equation*}
 \beta_0 = \bar{y} - \beta_1 \bar{x}
-\end{equation}
+\end{equation*}
 
 If we have several predictors we can extend our problem to a more general case.
 
-\begin{equation}
+\begin{equation*}
 \hat{y} = f(X) = \beta_{0} + \sum_{j=1}^{p} X_{j} \beta_{j}
-\end{equation}
+\end{equation*}
 
 Now $X$ is a vector containing all predictors, $X^{\top} = \{X_0, X_1, X_2, X_3,..., X_p\}$, $\beta_0$ is the intercept and $\beta_j$ is a vector keeping all coefficients for each predictor, the parameters we are searching for. $\hat{y}$ is the predicted values of $y = f(X)$. Moving $\beta_0$ to the $\beta-\textnormal{vector}$ and adding an extra column with 1's to the design matrix $X^{\top}$ we can reduce the problem to vector form and get the following. We will make use of this notation when finding solutions using least square etc. 
 
@@ -110,25 +110,25 @@ Now $X$ is a vector containing all predictors, $X^{\top} = \{X_0, X_1, X_2, X_3,
 
 The least square method selects the parameters $\beta$ so that residual sum of squares (RSS) is minimized.
 
-\begin{equation}
+\begin{equation*}
 \textnormal{RSS}(\beta) = \sum_{i=1}^{N} (y_i - x_i^{\top}\beta)^2
-\end{equation}
+\end{equation*}
 
 $y_i$ is still the independent variable, and $x_i^{\top}\beta$ represents the prediction of outcome given the calculated parameter $\beta$. And the difference between these variables squared gives us the RSS of the parameter $\beta$. $\beta$ is a vector $p + 1$ long, the number of features (plus the intercept) in the design matrix. 
 
 This can be expressed in matrix notation, using eq. \ref{eq:y_predict}. To find an expression for the $\beta$-parameter we look for the minimum of the RSS, meaning we take its derivative wrt. $\beta$.
 
-\begin{equation}
+\begin{equation*}
 \textnormal{RSS}(\beta) = (\mathbf{y} - \mathbf{X}\beta)^{\top}(\mathbf{y} - \mathbf{X}\beta)
-\end{equation}
+\end{equation*}
 
-\begin{equation}
+\begin{equation*}
 \frac{\partial \textnormal{RSS}(\beta)}{\partial \beta} = 0 = -2 \mathbf{X}^{\top}(\mathbf{y} - \mathbf{X}\beta)
-\end{equation}
+\end{equation*}
 
-\begin{equation}
+\begin{equation*}
 \mathbf{X}^{\top}\mathbf{y} - \mathbf{X}^{\top}\mathbf{X} \beta = 0
-\end{equation}
+\end{equation*}
 
 \begin{equation} \label{eq:beta}
 \hat{\beta} = (\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\mathbf{y}
@@ -141,23 +141,23 @@ This is the expresion we use in the ordinary least square-method in order to fin
 As mentioned in the section above we may come across problems where the columns in $X$ are not linear independent, often an issue for problems in high dimesions. Then the coefficients in $\beta$ are not uniquely defined through least square. This was the motivation for what would be the Ridge regression, an ad hoc solution to the singularity of $\mathbf{X^{\top}}\mathbf{X}$ introduced by Hoerl and Kennard (1970).
 They suggested adding a tuning parameter $\lambda$, i.e. a penalty to the sizes of the coefficients.
 
-\begin{equation}
+\begin{equation*}
 \mathbf{X}^{\top}\mathbf{X} \ \rightarrow \ \mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I}
-\end{equation}
+\end{equation*}
 
 By doing the replacement above we are able to calculate the inverse and can again find the expression for $\beta$ but this time through minimizing the penalized RSS. The solution for $\beta$ is eq. \ref{eq:beta}, which is now dependent on the parameter $\lambda$.
 
-\begin{equation}
+\begin{equation*}
 \textnormal{PRSS}(\beta) = (\mathbf{y} - \mathbf{X}\beta)^{\top}(\mathbf{y} - \mathbf{X}\beta) + \lambda ||\beta||^2
-\end{equation}
+\end{equation*}
 
-\begin{equation}
+\begin{equation*}
 \frac{\partial \textnormal{PRSS}(\beta)}{\partial \beta} = 0 = -2 \mathbf{X}^{\top}(\mathbf{y} - \mathbf{X}\beta) + 2 \lambda \beta
-\end{equation}
+\end{equation*}
 
-\begin{equation} 
+\begin{equation*} 
 \hat{\beta}(\lambda) = (\mathbf{X}^{\top}\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^{\top}\mathbf{y}
-\end{equation}
+\end{equation*}
 
 $\mathbf{I}$ is the identity matrix, a $p \times p$ matrix, and $\lambda \in [0, \infty]$. The tuning parameter $\lambda$ determines the regularization of the problem and different $\lambda$ will give different solution to the regression problem. Our task will be to find an optimal parameter for our case.
 
@@ -175,9 +175,9 @@ We can see from eq. \ref{eq:b_ridge} that the method assumes our design matrix i
 
 In 1996 Tibshirani suggested a new penalty, the Lasso. Similar to ridge regression but the difference lies in the last part.  
 
-\begin{equation}
+\begin{equation*}
 \hat{\beta}^{lasso} = \textnormal{argmin}_{\beta} \left \{ \sum_{i=1}^{N} (y_i - \beta_0 - \sum_{j=1}^{p} x_{ij} \beta_j)^2 + \lambda \sum_{j=1}^{p} |\beta_j| \right \}
-\end{equation}
+\end{equation*}
 
 As for the ridge regression the intercept is given by the mean of $y$.
 
@@ -185,9 +185,9 @@ As for the ridge regression the intercept is given by the mean of $y$.
 
 As mentioned in \ref{sec:OLS} we are dealing with a design matrix that is singular meaning $\mathbf{X}^{\top}\mathbf{X}$ is not invertible. One way to solve this problem is with the use of singular value decomposition (SVD). We can rewrite $\mathbf{X}$ as the factorization of a $n \times p$ unitary matrix $\mathbf{U}$, a $p \times p$ diagonal matrix $\mathbf{\Sigma}$ and the conjugate transpose of a $p \times p$ unitary matrix $\mathbf{V}$.
 
-\begin{equation} \label{eq:SVD}
+\begin{equation*} 
 \mathbf{X} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^\top
-\end{equation}
+\end{equation*}
 
 Now the inverse of the matrix product $\mathbf{X}^{\top}\mathbf{X}$ can be written as the inverse of the matrix product of the SVD.
 
@@ -197,30 +197,43 @@ The Moore-Penrose pseudoinverse is defined as $\mathbf{X}^+ = (\mathbf{X}^{\top}
 \mathbf{X}^+ = \mathbf{V} \mathbf{\Sigma}^+ \mathbf{U}^\top 
 \end{equation}
 
-Now we can rewrite the solution of $\beta$ as eq. \ref{eq:beta}.
+Now we can rewrite the solution of $\beta$ in eq. \ref{eq:beta} to the following.
 
-\begin{equation}
+\begin{equation*}
 \beta = \mathbf{V} \mathbf{\Sigma}^+ \mathbf{U}^\top \mathbf{y}
-\end{equation}
+\end{equation*}
 
 \subsection{Logistic regression}
 
-\begin{equation}
+We now move on to the classification part of the project and look closer on logistic regression. Where regression methods focus on predicting continuous variables of a response a classification method look at outcomes in form of discrete variables (i.e. categories).  \\
+Our aim is to make a classifier that can take in a number of spin-state congigurations and predict which categories these configurations belong to, the mentioned ordered and disordered phase.
+
+A simple classifier that is easy to understand and has some similarities to the regression methods above is a linear classifier that categorizes according to sign function. So for values above a certain threshold it maps the output to a category and for values below it maps it to another. But the function itself takes in continuous data, eq. \ref{eq:log_data}.
+
+\begin{equation} \label{eq:log_data}
 \mathbf{x}_i^{\top} \mathbf{w} + b_0 \equiv \mathbf{x}_i^{\top} \mathbf{w} 
 \end{equation}
 
-\begin{equation}
+But instead of a sign function we could, given $\mathbf{x}_i$, calculate the probability of the outcome being in a certain category. To calculate this probability we use the sigmoid function, eq. \ref{eq:sigmoid}, and the outsome is given as $y_i = \{0,1\}$.
+
+\begin{equation} \label{eq:sigmoid}
 f(\mathbf{x}_i^{\top} \mathbf{w}) = \frac{1}{1 + e^{-\mathbf{x}_i^{\top} \mathbf{w}}}
-\end{equation}
+\end{equation} 
 
-$y_i = \{0,1\}$
-
-\begin{equation}
-C(\beta) = \sum_{i=1}^N -y_i \log (f(X_i^\top \beta) - (1 - y_i) \log [1 - f(X_i^\top \beta)])
-\end{equation}
-
-\begin{equation}
+\begin{equation*}
 P(y_i = 1|\mathbf{x}_i,\mathbf{\theta}) = \frac{1}{1 + e^{-\mathbf{x}_i^{\top} \mathbf{w}}}
+\end{equation*}
+
+Since we are only dealing with a binary problem, the phase can either be ordered ($y_i = 1$), or disordered ($y_i = 0$) and we have that 
+
+\begin{equation*}
+P(y_i = 0|\mathbf{x}_i,\mathbf{\theta}) = 1 - P(y_i = 1|\mathbf{x}_i,\mathbf{\theta}).
+\end{equation*}
+
+To find the cost function of the logistic regression we we use the Maximum Likelihood Estimation (MLE). We want to maximize the probability of a configuration being in a category. This gives us the cross entropy \ref{cross_entropy}.
+
+\begin{equation} \label{cross_entropy}
+C(\beta) = \sum_{i=1}^N -y_i \log (f(X_i^\top \beta) - (1 - y_i) \log [1 - f(X_i^\top \beta)])
 \end{equation}
 
 \subsection{Neural Network}
