@@ -12,7 +12,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 L=40
 lambda_ = 0.001
 #method = 1 # plot phase of training data
-method = 2 # logistic regression with gradient descent
+method = 2 # logistic regression with gradient descent on ordered and disordered data
 #method = 3 # logistic regression with stochastic gradient descent
 
 # path to data directory
@@ -93,13 +93,25 @@ if method == 2:
 			beta = beta - v_t
 			e = abs(np.mean(gradient))
 			#print (e)
+
+	# run sign function to classify configuration and calculate accuracy
+	Y_pred = X_test.dot(beta)
+	print (Y_pred)
+	N = len(Y_pred)
+	for j in range(N):	
+		#if Y_pred == Y_train[j]:
+		if Y_pred[j] >= 0.5:
+			Y_pred[j] = 1.0
+		else:
+			Y_pred[j] = 0.0
+
 	indicator = 0.0
-	for j in range(n):
-		Y_pred = beta[j]*X_test[j]	
-		if Y_pred == Y_train[j]:
+	for k in range(N):
+		if Y_pred[k] == Y_test[k]:
 			indicator += 1.0
-	accuracy = indicator/n
-	#print (beta)
+
+	accuracy = indicator/N
+	print (accuracy)
 	
 if method == 3:
 	# Stochastic gradient descent 
@@ -119,6 +131,24 @@ if method == 3:
 				v_t = eta*gradient
 				beta = beta - v_t
 				e = abs(np.mean(gradient))
+
+	# run sign function to classify configuration and calculate accuracy
+	Y_pred = X_test.dot(beta)
+	N = len(Y_pred)
+	for j in range(N):	
+		#if Y_pred == Y_train[j]:
+		if Y_pred[j] >= 0.5:
+			Y_pred[j] = 1.0
+		else:
+			Y_pred[j] = 0.0
+
+	indicator = 0.0
+	for k in range(N):
+		if Y_pred[k] == Y_test[k]:
+			indicator += 1.0
+
+	accuracy = indicator/N
+	print (accuracy)
 	
 	
 
