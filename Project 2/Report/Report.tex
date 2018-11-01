@@ -11,6 +11,7 @@
 \usepackage{tabularx}
 \usepackage{tabulary}
 \usepackage{hyperref}
+\usepackage[space]{grffile}
 
 \begin{document}
 
@@ -118,9 +119,9 @@ $y_i$ is still the independent variable, and $x_i^{\top}\beta$ represents the pr
 
 This can be expressed in matrix notation, using eq. \ref{eq:y_predict}. To find an expression for the $\beta$-parameter we look for the minimum of the RSS, meaning we take its derivative wrt. $\beta$.
 
-\begin{equation*}
+\begin{equation} \label{RSS}
 \textnormal{RSS}(\beta) = (\mathbf{y} - \mathbf{X}\beta)^{\top}(\mathbf{y} - \mathbf{X}\beta)
-\end{equation*}
+\end{equation}
 
 \begin{equation*}
 \frac{\partial \textnormal{RSS}(\beta)}{\partial \beta} = 0 = -2 \mathbf{X}^{\top}(\mathbf{y} - \mathbf{X}\beta)
@@ -205,8 +206,8 @@ Now we can rewrite the solution of $\beta$ in eq. \ref{eq:beta} to the following
 
 \subsection{Logistic regression}
 
-We now move on to the classification part of the project and look closer on logistic regression. Where regression methods focus on predicting continuous variables of a response a classification method look at outcomes in form of discrete variables (i.e. categories).  \\
-Our aim is to make a classifier that can take in a number of spin-state congigurations and predict which categories these configurations belong to, the mentioned ordered and disordered phase.
+We now move on to the classification part of the project and look closer on logistic regression. Where regression methods focus on predicting continuous variables of a response a classification method look at outcomes in form of discrete variables (i.e. categories). Calling it regression is therefore some what misleading. \\
+However, our aim is to make a classifier that can take in a number of spin-state congigurations and predict which categories these configurations belong to, the mentioned ordered and disordered phase.
 
 A simple classifier that is easy to understand and has some similarities to the regression methods above is a linear classifier that categorizes according to sign function. So for values above a certain threshold it maps the output to a category and for values below it maps it to another. But the function itself takes in continuous data, eq. \ref{eq:log_data}.
 
@@ -251,21 +252,23 @@ C(\beta) = \sum_{i=1}^N -y_i \log (f(X_i^\top \beta) - (1 - y_i) \log [1 - f(X_i
 
 \subsection{Stochastic gradient descent}
 
-Gradient descent 
+In this project we are dealing with different types of cost functions. Depending on the method we use the minimization of the first derivative of the cost function is done differently. In the case of linear regression there is no use of numerical optimization methods as there exists an analytical solution to the derivative of the RSS, \ref{RSS}. In the case of logistic regression and the neural network however, there are no closed form solutions to the cost functions being used. We therefore take use of two algorithms called gradient descent and stochastic gradient descent in order to opdate the parameters (weights).
 
-minimizing the cost function
-
-\begin{equation}
-E(\theta) = \sum_{i=1}^N e_i(X_i, \theta) 
-\end{equation}
+We call the function we wish to minimize $E(\theta)$, as energy is the quantity we in most problems within physics are trying to minimize. In linear regression this is the MSE (RSS) and in logistic regression it is the cross entropy. 
 
 \begin{equation}
-\mathbf{v_t} = \eta_t \nabla_{\theta} E(\theta_t)
+E(\mathbf{\theta}) = \sum_{i=1}^N e_i(X_i, \mathbf{\theta}) 
 \end{equation}
 
-\begin{equation}
-\theta_{t+1} = \mathbf{\theta_t} - \mathbf{v_t}
+\begin{equation} \label{theta}
+\mathbf{\theta}_{t+1} = \mathbf{\theta}_t - \eta_t \nabla_{\mathbf{\theta}} E(\mathbf{\theta}_t)
 \end{equation}
+
+In regular gradient descent the algorithm simply updates the parameter $\theta_{t+1}$ according to eq. \ref{theta}. Since the cost function tells us something about how well the parameters work for our regression model we seek to minimize its gradient. Updateing the parameters with \ref{theta} causes the model to moves closer to a local minima. The $\eta$ is called the learning rate and it decides how fast we want to move in the gradients direction. A to large learning rate may cause the model to diverge, but given an optimal value or close to one the gradient descent will converge towards the minima.  
+
+Usually the first parameters are given random variables. 
+
+Gradient descent has some drawbacks, one being that it can get stuck in one local minima and never reaching the correct one. Another is that it is sensitvive to initial conditions, so what values we give the parameters in the begining matters. It is also somewhat computational expensive. A solution to this is stochastic gradient descent.  
 
 \begin{equation}
 \nabla_{\theta} E(\theta) = \sum_i^n \nabla_{\theta} e_i(\mathbf{x}_i, \mathbf{\theta}) \longrightarrow \sum_{i \in B_k} \nabla_{\theta} e_i(\mathbf{x}_i, \mathbf{\theta})
@@ -275,13 +278,11 @@ E(\theta) = \sum_{i=1}^N e_i(X_i, \theta)
 \nabla_{\theta} E^{MB} (\theta) = \sum_{i \in B_k}^M \nabla_{\theta} e_i(\mathbf{x}_i, \mathbf{\theta})
 \end{equation}
 
-\begin{equation}
-\mathbf{v_t} = \eta_t \nabla_{\theta} E^{MB} (\theta)
+\begin{equation} \label{theta_sgd}
+\theta_{t+1} = \mathbf{\theta_t} - \eta_t \nabla_{\theta} E^{MB} (\theta)
 \end{equation}
 
-\begin{equation}
-\theta_{t+1} = \mathbf{\theta_t} - \mathbf{v_t}
-\end{equation}
+Here we devide the data set into smaller minibatches of size $M$ creating $n/M$ batches. We denote these minibatches $B_k$ running from $k = 1...n/M$. Now we solve the gradient descent for the new minibatches and update the parameters according to \ref{theta_sgd}. Not do we only speed up the computational process, but it also introduces stochasticity. 
 
 \section{Resampling Methods}
 
@@ -319,6 +320,28 @@ Since our predictor is a random variable, how we draw the data will effect the e
 \section{Results}
 
 \subsection{Part b: 1D Ising with linear regression}
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_OLS.png}
+\caption{hh.}
+\label{fig:OLS}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_ridge.png}
+\caption{hh.}
+\label{fig:ridge}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_lasso.png}
+\caption{hh.}
+\label{fig:lasso}
+\end{figure}
+
 
 \subsection{Part c: 2D Ising with logistic regression}
 
