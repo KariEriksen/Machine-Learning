@@ -19,7 +19,7 @@ class Logistic_Regression:
 		lambda = the penalty
 		"""
 
-	def sigmoid(self, X, b):
+	def sigmoid(self, t):
 
 		"""
 		Returns the sigmoid function f(s) = 1/(1 + e^(-s))
@@ -32,8 +32,7 @@ class Logistic_Regression:
 		Note: 1 - f(s) = f(-s) 
 		      s = X.T.dot(b)
 		"""
-		t = -X.T.dot(b)
-		sigm = 1.0/(1.0 + np.exp(t))
+		sigm = (1.0 + np.exp(-t))**(-1)
 		return sigm
 
 	def deri_cross_entropy(self, beta):
@@ -56,9 +55,15 @@ class Logistic_Regression:
 		#dC = np.zeros((n,m))  
 		for i in range(n):
 			x_i = self.X_training[i,:]
-			y_i = self.z[i]
-			f_i = self.sigmoid(x_i, beta)
-			c = f_i - y_i
+			w = self.z[i]
+			#print (w)
+			#print (x_i[0:5])
+			s_i = x_i.dot(beta)
+			#print (s_i)
+			#print (x_i.dot(beta))
+			#exit()
+			f = self.sigmoid(s_i)
+			c = f - w
 			#dC[i] = sum(c*(x_i))
 			dC = sum(c*(x_i))  
 		return dC
