@@ -35,7 +35,20 @@ class Logistic_Regression:
 		sigm = (1.0 + np.exp(-t))**(-1)
 		return sigm
 
-	def deri_cross_entropy(self, beta):
+	def cross_entropy(self, w):
+		
+		"""
+		Calculates the cost function for the logistic 
+		regression case, i.e. the cross entropy. 
+		"""
+		
+		n = np.size(self.X_training,0) # size of row (number of columns) 
+		s_i = self.X_training.dot(w)
+		f = self.sigmoid(s_i)
+		C = -self.z*np.log(f) - (1 - self.z)*np.log(1 - f)
+		return np.sum(C)
+
+	def deri_cross_entropy(self, w):
 	 	
 		"""
 		Calculates the derivative of the cross entropy.
@@ -48,24 +61,15 @@ class Logistic_Regression:
 		the derivatives of each spin-element (in the rows) for all 
 		configurations (in the columns).
 		"""
-	
 		n = np.size(self.X_training,0) # number of samples
-		m = np.size(self.X_training,1) # number of spins
-		#dC = np.zeros(n)        
-		#dC = np.zeros((n,m))  
-
-		#x_i = self.X_training[i,:]
-		#w = self.z[i]
-		#print (w)
-		#print (x_i[0:5])
-		s_i = self.X_training.dot(beta)
-		#print (s_i)
-		#print (x_i.dot(beta))
-		#exit()
+		s_i = self.X_training.dot(w)
 		f = self.sigmoid(s_i)
 		c = f - self.z
-		#dC[i] = sum(c*(x_i))
 		dC = c.dot(self.X_training)
+		#print (dC)
+		#exit()
+		#print (c.shape, dC.shape)
+		#exit() 
 		return dC
 
 

@@ -56,6 +56,8 @@ X_train = X[:9000,:]
 Y_train = Y[:9000]
 X_test = X[9000:,:]
 Y_test = Y[9000:]
+#print (X_train[0:10,0:10])
+#exit()
 beta = np.random.normal(0, 1, np.size(X_train,1))
 
 if method == 1:
@@ -83,7 +85,7 @@ if method == 2:
 	# Gradient descent 
 	eps = 1e-5
 	e = 1.0
-	eta = 0.5
+	eta = 0.01
 	n = 100
 	log_r = Logistic_Regression(X_train, X_test, Y_train, lambda_)
 	for i in range(n):
@@ -91,16 +93,19 @@ if method == 2:
 			# Calculate the derivative of the cost function	
 			gradient = log_r.deri_cross_entropy(beta)
 			v_t = eta*gradient
-			#print ('gradient = %s' % gradient)
+			#print (gradient.shape)
+			print ('gradient = %s' % gradient[0:5])
+			#exit()
 			#print ('v_t = %s' % v_t)
 			#print (beta[0:5])
 			beta = beta - v_t
 			e = abs(np.mean(gradient))
-			#print (e)
+			print (beta[0:5])
+
 
 	# run sign function to classify configuration and calculate accuracy
-	Y_pred = X_test.dot(beta)
-	print (Y_pred)
+	#Y_pred = X_test.dot(beta)
+	#print (Y_pred)
 	N = len(Y_pred)
 	for j in range(N):	
 		#if Y_pred == Y_train[j]:
