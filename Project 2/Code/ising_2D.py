@@ -12,8 +12,8 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 L=40
 lambda_ = 0.001
 #method = 1 # plot phase of training data
-#method = 2 # logistic regression with gradient descent on ordered and disordered data
-method = 3 # logistic regression with stochastic gradient descent
+method = 2 # logistic regression with gradient descent on ordered and disordered data
+#method = 3 # logistic regression with stochastic gradient descent
 
 # path to data directory
 cwd = os.getcwd()
@@ -39,6 +39,8 @@ Y_critical=labels[70000:100000]
 
 X_disordered=data[100000:,:]
 Y_disordered=labels[100000:]
+
+del data,labels
 
 # define training and test data sets
 X=np.concatenate((X_ordered,X_disordered))
@@ -89,7 +91,9 @@ if method == 2:
 			# Calculate the derivative of the cost function	
 			gradient = log_r.deri_cross_entropy(beta)
 			v_t = eta*gradient
-			#print (gradient)
+			#print ('gradient = %s' % gradient)
+			#print ('v_t = %s' % v_t)
+			#print (beta[0:5])
 			beta = beta - v_t
 			e = abs(np.mean(gradient))
 			#print (e)
@@ -111,7 +115,7 @@ if method == 2:
 			indicator += 1.0
 
 	accuracy = indicator/N
-	print (accuracy)
+	#print (accuracy)
 	
 if method == 3:
 	# Stochastic gradient descent 
