@@ -51,12 +51,16 @@ class Logistic_Regression:
 		"""
 	
 		n = np.size(self.X_training,0) # number of samples
-		dC = np.zeros(np.size(self.X_training,1))
+		m = np.size(self.X_training,1) # number of spins
+		#dC = np.zeros(n)        
+		#dC = np.zeros((n,m))  
 		for i in range(n):
 			x_i = self.X_training[i,:]
 			y_i = self.z[i]
 			f_i = self.sigmoid(x_i, beta)
-			dC += (f_i - y_i)*(x_i) 
+			c = f_i - y_i
+			#dC[i] = sum(c*(x_i))
+			dC = sum(c*(x_i))  
 		return dC
 
 
