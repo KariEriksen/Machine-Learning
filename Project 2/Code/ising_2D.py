@@ -92,13 +92,12 @@ if method == 2:
 		if e > eps:
 			# Calculate the derivative of the cost function	
 			gradient = log_r.deri_cross_entropy(beta)
-			v_t = eta*gradient
 			#print (gradient.shape)
 			print ('gradient = %s' % gradient[0:5])
 			#exit()
 			#print ('v_t = %s' % v_t)
 			#print (beta[0:5])
-			beta = beta - v_t
+			beta = beta - eta*gradient
 			e = abs(np.mean(gradient))
 			print (beta[0:5])
 

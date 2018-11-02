@@ -1,3 +1,5 @@
+import numpy as np
+
 class NeuralNetwork:
     def __init__(
         self,
@@ -37,7 +39,7 @@ class NeuralNetwork:
     def feed_forward(self):
         # feed-forward for training
         self.z_h = np.matmul(self.X_data, self.hidden_weights) + self.hidden_bias
-        self.a_h = sigmoid(self.z_h)
+        self.a_h = self.sigmoid(self.z_h)
 
         self.z_o = np.matmul(self.a_h, self.output_weights) + self.output_bias
 
@@ -47,7 +49,7 @@ class NeuralNetwork:
     def feed_forward_out(self, X):
         # feed-forward for output
         z_h = np.matmul(X, self.hidden_weights) + self.hidden_bias
-        a_h = sigmoid(z_h)
+        a_h = self.sigmoid(z_h)
 
         z_o = np.matmul(a_h, self.output_weights) + self.output_bias
         
@@ -98,5 +100,8 @@ class NeuralNetwork:
 
                 self.feed_forward()
                 self.backpropagation()
+
+    def sigmoid(self, t):
+        return (1.0 + np.exp(-t))**(-1)
 
 
