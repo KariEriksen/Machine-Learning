@@ -12,10 +12,14 @@ class My_Linear_Regression:
 		"""
 		###### Variables #######
 
-		X_training = training data used to fit the model
-		X_test = data to test the model on
-		z = the response
-		lambda = the penalty
+		X_training = training data used to fit the model, (n, p) array 
+		where n = number of training samples and p = number of features
+
+		X_test = data to test the model on, (n, p) array
+		where n = number of test samples
+		
+		z = the response, (n, ) 
+		lambda = the penalty, float
 		"""
 
 	def My_OLS(self):
