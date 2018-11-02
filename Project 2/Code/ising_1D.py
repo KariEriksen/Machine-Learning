@@ -5,6 +5,7 @@ from linear_regression import My_Linear_Regression
 from sklearn.linear_model import Lasso
 from bootstrap import Bootstrap
 import matplotlib.pyplot as plt
+import sys
 
 # decide which method to use
 #part = 1 #OLS
@@ -13,7 +14,7 @@ import matplotlib.pyplot as plt
 #part = 4 #R score with bootstrap
 #part = 5 #MSE with bootstrap
 
-part = sys.argv[1]
+part = int(sys.argv[1])
 
 # define Ising model aprams
 # system size
@@ -61,6 +62,14 @@ X_test=Data[0][n_samples:3*n_samples//2]
 Y_test=Data[1][n_samples:3*n_samples//2] #+ np.random.normal(0,4.0,size=X_test.shape[0])
 
 if part == 1:
+
+	"""
+	###### Part 1 #######
+
+	Uses the OLS of the training data and plots 
+	the J-matrix fitted to the model. 
+	"""
+
 	lr = My_Linear_Regression(X_train, X_test, Y_train, lambda_)
 	lr.My_OLS()
 	energies_predict = lr.My_Predict(X_test, False)
@@ -71,9 +80,18 @@ if part == 1:
 	cmap_args=dict(vmin=-1., vmax=1., cmap='seismic')
 	plt.imshow(J_new,**cmap_args)
 	plt.title('$\\mathrm{OLS}$', fontsize=12)
+	plt.colorbar()
 	plt.show()
 
 elif part == 2:
+
+	"""
+	###### Part 2 #######
+
+	Uses the ridge regression of the training data and plots 
+	the J-matrix fitted to the model for different lambdas. 
+	"""
+
 	lambda_ = np.array([0.001, 0.01, 0.1, 1.0])
 	coeff = np.zeros((4, np.size(X_test,1)))
 	for i in range(4):
@@ -115,6 +133,14 @@ elif part == 2:
 	plt.show()
 
 elif part == 3:
+
+	"""
+	###### Part 3 #######
+
+	Uses the lasso regression of the training data and plots 
+	the J-matrix fitted to the model for different lambdas.
+	"""
+
 	lambda_ = np.array([0.001, 0.01, 0.1, 1.0])
 	coeff = np.zeros((4, np.size(X_test,1)))
 	doubleR = np.zeros(4)
@@ -159,6 +185,14 @@ elif part == 3:
 	plt.show()
 
 elif part == 4:
+
+	"""
+	###### Part 4 #######
+
+	Uses the OLS, ridge and lasso regression of the training data and plots 
+	the R-score for test data and predicted data, for different lambdas.
+	"""
+
 	method = 'OLS' 
 	doubleR_OLS = np.zeros(9)
 	lambda_ = np.array([0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0, 100000.0])
@@ -196,6 +230,15 @@ elif part == 4:
 	plt.show()
 
 elif part == 5:
+
+	"""
+	###### Part 5 #######
+
+	Run bootstrap one all methods, OLS, ridge and lasso, calculates 	
+	the MSE, bias and variance of the coefficients from the fit 
+	for different lambdas.
+	"""
+
 	method = 'Lasso' # select the optimal method
 	MSE = np.zeros(9)
 	bias = np.zeros(9)
@@ -222,7 +265,7 @@ elif part == 5:
 	plt.show()
 
 else:
-	print('Method must be given, ex. 1, corresponds to OLS')
+	print('Part of project must be given, ex. 1, corresponds to OLS')
 
 
 
