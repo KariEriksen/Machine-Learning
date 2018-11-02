@@ -64,15 +64,17 @@ E[s] = -J \sum_{j=1}^L s_j s_{j+1}
 
 Now we have $L$ number of spins in a one dimensional array. If we where to have a data set $i = 1, ..., n$ of different configurations on the form $\{(E[s^i], s^i)\}$ we could use this in training a linear model to find the coupling constant. That way we could use much of the code from project 1. To do so we use the all-to-all Ising model and notice that the energy is linear in $J$.  
 
-\begin{equation}
+\begin{equation} \label{eq:energy}
 E_{model}[s^i] = -\sum_{j=1}^L \sum_{k=1}^L J_{j,k} s_j^i s_k^i
 \end{equation}
 
 We can now recast this problem to a linear regression model, rewriting all two-body interactions $\{s_j^i s_k^i\}_{j,k}^L$ as a vector $\mathbf{X}^i$. 
 
-\begin{equation}
+\begin{equation} 
 E_{model}^i \equiv \mathbf{X}^i \cdot \mathbf{J}
 \end{equation}
+
+This looks much like the design matrix in project 
 
 \section{Methods}
 
@@ -306,9 +308,19 @@ Since our predictor is a random variable, how we draw the data will effect the e
 \textnormal{R}^2(y,\hat{y}) = 1 - \frac{\sum_{n}^{i=1} (y_i - \hat{y_i})^2}{\sum_{n}^{i=1}(y_i - \bar{y})^2}
 \end{equation}
 
+\begin{equation}
+\textnormal{Accuracy} = \frac{\sum_{i=1}^n I(t_i = y_i)}{n}
+\end{equation}
+
 \section{Implementation}
 
-\subsection{Part b: 1D Ising with linear regression}
+All code material can be found at \url{https://github.com/KariEriksen/Machine-Learning/tree/master/Project%202/Code}.
+It should also be mentioned that when working with the programs the notebook of Metha,\cite{high-bias-notebook} has been widely used. 
+
+\subsection{Part b: 1D Ising with linear regression} \label{sec:part_b}
+
+The data produced for this part is generated through code given in the notebook mentioned above. The function ising\_energies produces the energy-term in \ref{eq:energy} given the sampled states. This is our data. In the file ising\_1D.py we call upon the Bootstrap class which runs the linear regression model for the number of given bootstrap iterations. The Bootstrap class calls the class My\_Linear\_Regression and given the method choosen; OLS, ridge or lasso it will solve the regression problem for as many times as given. 
+In ising\_1D.py it is possible to select different parts, plotting the matrix containing the coupling constant $J$ given the different methods, or plotting the $R^2$ or MSE.  
 
 \subsection{Part c: 2D Ising with logistic regression}
 
@@ -321,24 +333,42 @@ Since our predictor is a random variable, how we draw the data will effect the e
 
 \subsection{Part b: 1D Ising with linear regression}
 
-\begin{figure}
+We are using linear regression on the sampled spins-states and corresponding energies in order to train the network estimating the coupling constant. For ordinary least square the result can be viewed in fig. \ref{fig:OLS}. The first we see is that the diagonal elements are close to zero, and the upper and lower elemtents are around 0.5. The same can be observed for the ridge regression and it does not seem to make a difference what $\lambda$ we use. If we look at fig. \ref{fig:1D_R_all} however we can see that for $\lambda$ higher than 100 the score decreases towards zero. And both for OLS and ridge the score is fairly low for all values. 
+
+Moving on to lasso regression the situation is much better. Fig. \ref{fig:lasso} show the coupling constant which seems to be very close to -1. The R-score confirm our guess. It is close to 1 for $\lambda = \{0.001, 0.1\}$ but drops when we get higher than 0.1. A plot of the bias-variance tradeoff can be seen in fig. \ref{fig:1D_bias}. 
+
+\begin{figure} \label{fig:OLS}
 \centering
-\includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_OLS.png}
-\caption{hh.}
+\includegraphics[width=0.8\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_OLS.png}
+\caption{The figure shows the matrix $J$ given by the ordinary least square method explained in \ref{sec:part_b}. The model has been trained with a training set and tested with a separeted test set.} 
 \label{fig:OLS}
 \end{figure}
 
-\begin{figure}
+\begin{figure} \label{fig:ridge}
 \centering
 \includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_ridge.png}
-\caption{hh.}
+\caption{The matrix $J$ with ridge regression method. We observe that changes in $\lambda$ does not give a closer representation of the coupling constant.}
 \label{fig:ridge}
 \end{figure}
 
-\begin{figure}
+\begin{figure} \label{fig:lasso}
 \centering
 \includegraphics[width=1.0\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_lasso.png}
-\caption{hh.}
+\caption{With lasso regression we get an enormous increase in the fit of the coupling constant. The method is able to fit the model very well for $\lambda = \{0.001, 0.1\}$.}
+\label{fig:lasso}
+\end{figure}
+
+\begin{figure} \label{fig:1D_R_all}
+\centering
+\includegraphics[width=0.8\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising_1D_Rscore_all.png}
+\caption{The $\textnormal{R}^2\textnormal{-score}$ of the predicted output values, the energy, for all linear regression methods using bootstrap, with 100 iterations. The lasso is superior to the others with a score close to 1 for smaller $\lambda$.}
+\label{fig:lasso}
+\end{figure}
+
+\begin{figure} \label{fig:1D_bias}
+\centering
+\includegraphics[width=0.8\textwidth]{/home/kari/Machine-Learning/Project 2/Figures/ising1D_bias.png}
+\caption{The bias-variance tradeoff for the coefficients with lasso regression using bootstrap resampling method with 100 iterations.}
 \label{fig:lasso}
 \end{figure}
 
@@ -380,6 +410,9 @@ Since our predictor is a random variable, how we draw the data will effect the e
   
 \bibitem{high-bias}
   \url{https://arxiv.org/pdf/1803.08823.pdf,}, 08/10-18.
+  
+ \bibitem{high-bias-notebook}
+  \url{https://physics.bu.edu/~pankajm/MLnotebooks.html}, 08/10-18.
   
 \bibitem{lasso}
   \url{https://www.jstor.org/stable/pdf/2346178.pdf}, 08/10-18.
